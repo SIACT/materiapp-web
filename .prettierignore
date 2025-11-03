@@ -1,0 +1,29 @@
+# Ignore artifacts:
+build
+coverage
+dist
+out
+public
+styles
+node_modules
+.vscode
+.angular
+*.md
+*.yml
+/tsconfig.json
+*.json
+# Ignore artifacts:
+build
+coverage
+dist
+out
+public
+styles
+node_modules
+.vscode
+.angular
+*.md
+*.yml
+/tsconfig.json
+*.json
+
