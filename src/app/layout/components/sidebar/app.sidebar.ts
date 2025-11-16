@@ -9,16 +9,60 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MenuModule, BadgeModule,RippleModule,AvatarModule, CommonModule],
+  imports: [MenuModule, BadgeModule, RippleModule, AvatarModule, CommonModule],
   template: `
-   <p-menu [model]="items" class="flex justify-center w-full h-full" styleClass="w-full md:w-60 !border-0 h-full flex flex-col">
+   <!-- Mobile toggle button -->
+   <button class="md:hidden fixed top-4 left-4 z-50 bg-primary text-white p-2 rounded shadow-lg" (click)="showMobileMenu = true" aria-label="Open menu">
+     <i class="pi pi-bars text-lg"></i>
+   </button>
+
+   <!-- Mobile menu using p-menu -->
+   <div class="fixed inset-0 left-0 top-0 w-64 h-screen transform transition-transform duration-300 z-40 md:hidden"
+        [class.-translate-x-full]="!showMobileMenu"
+        (click)="$event.target === $event.currentTarget && (showMobileMenu = false)">
+     <div class="absolute inset-0 bg-black bg-opacity-50 -z-10 md:hidden" (click)="showMobileMenu = false"></div>
+     <p-menu [model]="items" styleClass="w-full !border-0 h-full flex flex-col bg-surface">
+       <ng-template #start>
+         <span class="inline-flex items-center gap-1 px-2 py-3">
+           <span class="text-xl font-semibold">MATER<span class="text-secondary">IA</span>PP</span>
+         </span>
+       </ng-template>
+       <ng-template #submenuheader let-item>
+         <br>
+         <span class="!text-primary font-bold">{{ item.label }}</span>
+       </ng-template>
+       <ng-template #item let-item>
+         <a pRipple class="flex items-center p-menu-item-link">
+           <span [class]="item.icon"></span>
+           <span class="ml-2">{{ item.label }}</span>
+           <p-badge *ngIf="item.badge" class="ml-auto" [value]="item.badge" />
+           <span *ngIf="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+         </a>
+       </ng-template>
+       <ng-template #end>
+         <br>
+         <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200">
+           <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
+           <span class="inline-flex flex-col">
+             <span class="font-bold">Amy Elsner</span>
+             <span class="text-sm">Admin</span>
+           </span>
+         </button>
+       </ng-template>
+     </p-menu>
+   </div>
+
+   <!-- Desktop menu (hidden on mobile) -->
+   <div class="hidden md:block h-full">
+     <p-menu [model]="items" styleClass="w-full md:w-60 !border-0 h-full flex flex-col ">
         <ng-template #start>
-            <span class="inline-flex items-center gap-1 px-2 py-3">
-                
+            <span class="inline-flex items-center gap-1 px-2 py-3">      
                 <span class="text-xl font-semibold">MATER<span class="text-secondary">IA</span>PP</span>
             </span>
         </ng-template>
+      
         <ng-template #submenuheader let-item>
+          <br>
             <span class="!text-primary font-bold">{{ item.label }}</span>
         </ng-template>
         <ng-template #item let-item>
@@ -29,6 +73,7 @@ import { RippleModule } from 'primeng/ripple';
                 <span *ngIf="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
             </a>
         </ng-template>
+      
         <ng-template #end>
             <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200">
                 <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
@@ -38,12 +83,16 @@ import { RippleModule } from 'primeng/ripple';
                 </span>
             </button>
         </ng-template>
+        
+        
     </p-menu>
+   </div>
   `,
   
 })
 export class AppSidebar {
   items: MenuItem[] | undefined;
+  showMobileMenu = false;
 
   ngOnInit() {
         this.items = [
@@ -54,7 +103,12 @@ export class AppSidebar {
                 label: 'Carreras',
                 items: [
                     {
-                        label: 'Mi Carrera',
+                        label: 'Inicio',
+                        icon: 'pi pi-home',
+                        shortcut: '⌘+S'
+                    },
+                    {
+                        label: 'Mi Pensum',
                         icon: 'pi pi-graduation-cap',
                         shortcut: '⌘+N'
                     },
@@ -64,10 +118,26 @@ export class AppSidebar {
                         shortcut: '⌘+S'
                     },
                     {
-                        label: 'Search',
-                        icon: 'pi pi-search',
-                        shortcut: '⌘+S'
-                    }
+                        label: 'Carga Academica',
+                        icon: 'pi pi-file-arrow-up',
+                        shortcut: '⌘+C'
+                    },
+                    
+                     {
+                        label: '',
+                        icon: '',
+                        shortcut: ''
+                    },
+                    {
+                        label: '',
+                        icon: '',
+                        shortcut: ''
+                    },
+                    {
+                        label: '',
+                        icon: '',
+                        shortcut: ''
+                    },
                 ]
             },
             {

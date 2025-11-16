@@ -6,7 +6,7 @@
 
 :root {
   /* Colores Primarios */
-  --color-primary: #333841;
+  --color-primary: #ffffff;
   --color-primary-dark: #1e40af;
   --color-primary-light: #f6f8fa;
 
@@ -32,13 +32,7 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #06b6d4;
-
-  /* Colores de Fondo */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-: #f3f4f6;
-  --bg-overlay: rgba(0, 0, 0, 0.5);
-
+ 
   /* Colores de Texto */
   --text-primary: #111827;
   --text-secondary: #6b7280;
@@ -78,14 +72,8 @@
   --dark-text-secondary: #d1d5db;
 }
 
-/* Fondo Principal */
-.bg-main {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
-
 .container-sidebar {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-primary);
   padding: var(--spacing-md);
 }
 
@@ -103,15 +91,15 @@
 
 /* Contenedores Base */
 .container-primary {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-gray-100);
  
 }
 .container-header {
-  background-color: var(--bg-primary);
+  background-color: var(--color-gray-100);
   border-top-right-radius: var(--radius-md);
   border-top-left-radius: var(--radius-md);
   padding: var(--spacing-xs);
-  border-bottom: 1px solid var(--color-gray-600);
+  border-bottom: 1px solid var(--color-primary);
 }
 
 .container-secondary {

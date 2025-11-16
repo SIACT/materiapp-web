@@ -110,7 +110,7 @@ export class AppConfigurator {
 
     showMenuModeButton = signal(!this.router.url.includes('auth'));
 
-    menuModeOptions = [
+    menuModeOptions: Array<{ label: string; value: 'static' | 'overlay' }> = [
         { label: 'Static', value: 'static' },
         { label: 'Overlay', value: 'overlay' }
     ];
@@ -440,7 +440,7 @@ export class AppConfigurator {
         $t().preset(preset).preset(this.getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
     }
 
-    onMenuModeChange(event: string) {
+    onMenuModeChange(event: 'static' | 'overlay') {
         this.layoutService.layoutConfig.update((prev) => ({ ...prev, menuMode: event }));
     }
 }
