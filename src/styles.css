@@ -1,1 +1,230 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  /* Colores Primarios */
+  --color-primary: #333841;
+  --color-primary-dark: #1e40af;
+  --color-primary-light: #f6f8fa;
+
+  /* Colores Secundarios */
+  --color-secondary: #8b5cf6;
+  --color-secondary-dark: #5b21b6;
+  --color-secondary-light: #ede9fe;
+
+  /* Colores Neutrales */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Colores de Estado */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #06b6d4;
+
+  /* Colores de Fondo */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-: #f3f4f6;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Colores de Texto */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Espaciado (en píxeles) */
+  --spacing-xs: 0.25rem; 
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  /* Transiciones */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  /* Tema Oscuro */
+  --dark-bg-primary: #1f2937;
+  --dark-bg-secondary: #111827;
+  --dark-bg-tertiary: #0f172a;
+  --dark-text-primary: #f9fafb;
+  --dark-text-secondary: #d1d5db;
+}
+
+/* Fondo Principal */
+.bg-main {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.container-sidebar {
+  background-color: var(--color-primary-light);
+  padding: var(--spacing-md);
+}
+
+/* Fondo Secundario */
+.bg-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Fondo Terciario */
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Contenedores Base */
+.container-primary {
+  background-color: var(--color-primary-light);
+ 
+}
+.container-header {
+  background-color: var(--bg-primary);
+  border-top-right-radius: var(--radius-md);
+  border-top-left-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-gray-600);
+}
+
+.container-secondary {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+/* Texto */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+/* Tema Oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+  }
+}
+
+/* Colores Primarios */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-dark {
+  background-color: var(--color-primary-dark);
+}
+
+.bg-primary-light {
+  background-color: var(--color-primary-light);
+}
+
+/* Colores Secundarios */
+.bg-secondary-custom {
+  background-color: var(--color-secondary);
+}
+
+.bg-secondary-dark {
+  background-color: var(--color-secondary-dark);
+}
+
+/* Colores de Estado */
+.bg-success {
+  background-color: var(--color-success);
+}
+
+.bg-warning {
+  background-color: var(--color-warning);
+}
+
+.bg-error {
+  background-color: var(--color-error);
+}
+
+.bg-info {
+  background-color: var(--color-info);
+}
+
+/* Fondo Base */
+.bg-base {
+  background-color: var(--bg-primary);
+}
+
+.bg-base-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-base-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Texto con Variables */
+.text-base-primary {
+  color: var(--text-primary);
+}
+
+.text-base-secondary {
+  color: var(--text-secondary);
+}
+
+.text-base-tertiary {
+  color: var(--text-tertiary);
+}
+
+.text-inverse {
+  color: var(--text-inverse);
+}
+
+/* Sombras Personalizadas */
+.shadow-custom-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-custom-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-custom-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-custom-xl {
+  box-shadow: var(--shadow-xl);
+}
