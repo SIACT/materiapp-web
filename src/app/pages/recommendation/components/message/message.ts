@@ -30,10 +30,10 @@ import { MessageService } from 'primeng/api';
           </div>
           <div class="flex flex-col gap-2">
             <p-progressbar [value]="progress" [showValue]="false" [style]="{ height: '4px' }" class="!bg-primary/80" />
-            <label class="text-sm font-bold text-white dark:text-black">{{ progress }}% uploaded</label>
+            <label class="text-sm font-bold text-white dark:text-black">{{ progress }}% generated</label>
           </div>
           <div class="flex gap-4 mb-4 justify-end">
-            <p-button label="Another Upload?" (click)="closeFn($event)" size="small" />
+          
             <p-button label="Cancel" (click)="closeFn($event)" size="small" />
           </div>
         </section>

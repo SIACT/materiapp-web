@@ -2,17 +2,26 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { LayoutService } from '../../services/layout.service';
+import { ButtonModule } from 'primeng/button';
+import { Button } from "primeng/button";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonModule],
   template: `
  <!-- Header -->
-      <header class="w-full h-12   text-gray-900 flex items-center justify-between px-4">
-        <div class="flex items-center px-3">
-          <span class="pi pi-bars text-xl mr-3" aria-hidden="true"></span>
-          <span class="h-6 w-px bg-white mr-3"></span>
+      <header class="w-full h-12 text-gray-900 flex items-center justify-between px-4">
+        <div class="flex items-center px-3 gap-3">
+          <button 
+            pButton 
+            type="button" 
+            class="lg:hidden p-button-text p-button-rounded" 
+            aria-label="Alternar menú"
+            (click)="toggleSidebar()">
+            <span class="pi pi-bars text-lg" aria-hidden="true"></span>
+          </button>
+          <span class="h-6 w-px bg-white"></span>
           <span class="text-base font-medium">{{ currentSelection }}</span>
         </div>
         <div class="text-sm font-semibold px-3">SIACT</div>
@@ -34,5 +43,9 @@ export class AppHeader implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
+  }
+
+  toggleSidebar() {
+    this.layoutService.toggleSidebarVisibility();
   }
 }

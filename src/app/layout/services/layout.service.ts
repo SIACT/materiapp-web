@@ -20,6 +20,9 @@ export class LayoutService {
 	private currentSubject = new BehaviorSubject<string>('Inicio');
 	current$ = this.currentSubject.asObservable();
 
+	private sidebarVisibleSubject = new BehaviorSubject<boolean>(true);
+	sidebarVisible$ = this.sidebarVisibleSubject.asObservable();
+
 	// Signal-based layout config so components can read via `layoutConfig()`
 	// and update via `layoutConfig.update(...)` (WritableSignal API).
 	layoutConfig: WritableSignal<LayoutConfig> = signal<LayoutConfig>({
@@ -34,6 +37,18 @@ export class LayoutService {
 
 	setCurrent(label: string) {
 		this.currentSubject.next(label || 'Inicio');
+	}
+
+	toggleSidebarVisibility() {
+		this.sidebarVisibleSubject.next(!this.sidebarVisibleSubject.value);
+	}
+
+	setSidebarVisibility(visible: boolean) {
+		this.sidebarVisibleSubject.next(visible);
+	}
+
+	get isSidebarVisible(): boolean {
+		return this.sidebarVisibleSubject.value;
 	}
 }
 
