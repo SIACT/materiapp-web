@@ -107,6 +107,12 @@
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
 }
+.container-shearch {
+  background-color: var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  border: 1px solid var(--color-gray-300)
+}
 
 /* Texto */
 .text-primary {
@@ -224,4 +230,52 @@
 
 .shadow-custom-xl {
   box-shadow: var(--shadow-xl);
+}
+
+.shearch-menubar {
+  width: 100%;
+}
+
+.shearch-field {
+  width: min(100%, 16rem);
+}
+
+@media (min-width: 768px) {
+  .shearch-field {
+    width: 16rem;
+  }
+}
+
+.shearch-input,
+.shearch-select,
+.shearch-select .p-select {
+  width: 100%;
+}
+
+.shearch-menubar .p-menubar-root-list,
+.shearch-menubar .p-menubar-start,
+.shearch-menubar .p-menubar-end {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.shearch-menubar .p-menubar-start,
+.shearch-menubar .p-menubar-end {
+  max-width: 16rem;
+}
+
+/* Subject Card Styles */
+.subject-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.subject-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.subject-card.bg-primary-light {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-dark);
 }
