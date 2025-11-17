@@ -15,7 +15,7 @@ import { MeterGroupModule } from 'primeng/metergroup';
 
   <div class="">
     <div class="card flex justify-center mb-8 flex-col items-center">
-      <h1>Total Carrera</h1>
+      <h1 class>Total Carrera</h1>
       <p-knob [(ngModel)]="values" [readonly]="true" />
     </div>
 

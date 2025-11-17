@@ -19,7 +19,7 @@ interface Subject {
   imports: [PanelModule, DialogModule, ListboxModule, FormsModule, CommonModule],
   template: `
   <div class="w-full flex flex-col ">
-    <div class="flex items-center justify-between w-full mb-2">
+    <div class="flex items-center justify-between w-full py-3">
       <h1 class="m-0">Materias</h1>
       <button class="px-3 py-1 bg-red-600 text-white rounded text-sm" (click)="clearAllSelections()">Limpiar</button>
     </div>
@@ -31,11 +31,11 @@ interface Subject {
             {{ getSelectedCount(tab.value) }}/{{ subjects.length }} materias seleccionadas
           </span>
         </button>
-          <p-dialog [(visible)]="dialogVisible[tab.value]" [modal]="true" [closable]="true" [dismissableMask]="true" [style]="{ width: '95vw', maxWidth: '720px' }" [baseZIndex]="10000">
+          <p-dialog [(visible)]="dialogVisible[tab.value]" [modal]="true" [closable]="true" [dismissableMask]="true" [style]="{ width: '95vw', maxWidth: '480px' }" [baseZIndex]="10000">
 
           
           <ng-template pTemplate="header">
-            <div class="flex items-center w-full">
+            <div class="flex items-center w-full px-14">
               <span>{{ tab.title }}</span>
               <span class="ml-auto text-sm text-secondary m-2">
                 {{ getSelectedCount(tab.value) }}/{{ subjects.length }} materias seleccionadas

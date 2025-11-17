@@ -9,7 +9,7 @@ export const routes: Routes = [
         component:AppLayout,
         children: [
             {path: '',component: Dashboard },
-            {path: 'recommendation', loadChildren:() => import('./pages/dashboard/components/recommendation/recommendatios.router') },
+            {path: 'recommendation', loadChildren:() => import('./pages/recommendation/recommendation.router') },
             {path: 'footer', component: AppFooter }
         
         ]

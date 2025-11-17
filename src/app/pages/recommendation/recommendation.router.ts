@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
-import { MessageComponent } from "./message";
+import { AppMessage } from './components/message/message';
+ 
 
 export default [
     {
-        path: 'button', 
+        path: 'ia', 
         data: { breadcrumb: 'Button' },
-        component: MessageComponent
+        component: AppMessage
     }
 ] as Routes;

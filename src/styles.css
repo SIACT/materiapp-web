@@ -11,7 +11,7 @@
   --color-primary-light: #f6f8fa;
 
   /* Colores Secundarios */
-  --color-secondary: #8b5cf6;
+  --color-secondary: #198a2c;
   --color-secondary-dark: #5b21b6;
   --color-secondary-light: #ede9fe;
 
@@ -36,7 +36,7 @@
   /* Colores de Texto */
   --text-primary: #111827;
   --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
+  --text-tertiary: #198a2c;
   --text-inverse: #ffffff;
 
   /* Sombras */
@@ -103,14 +103,14 @@
 }
 
 .container-secondary {
-  background-color: var(--bg-secondary);
+  background-color: var(--color-primary);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
 }
 
 /* Texto */
 .text-primary {
-  color: var(--text-primary);
+  color: var(--color-gray-800);
 }
 
 .text-secondary {
@@ -119,6 +119,15 @@
 
 .text-tertiary {
   color: var(--text-tertiary);
+}
+
+.button-secundary {
+  background-color: var(--color-secondary);
+  color: var(--text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+  
 }
 
 /* Tema Oscuro */
