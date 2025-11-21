@@ -1,27 +1,51 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+export interface DashboardFilters {
+  search: string;
+  calendar: string | null;
+  onlyRemaining: boolean;
+}
+
 interface Subject {
   name: string;
   code: string;
   credits: number;
+ 
 }
 
 export type SelectionsMap = { [tabValue: string]: Subject[] };
 
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
+  
+  private filtersSubject = new BehaviorSubject<DashboardFilters>({
+    search: '',
+    calendar: null,
+    onlyRemaining: false
+  });
+  filters$ = this.filtersSubject.asObservable();
+
+  updateFilters(filters: Partial<DashboardFilters>) {
+    this.filtersSubject.next({
+      ...this.filtersSubject.value,
+      ...filters
+    });
+  }
+
+
   // mantiene el mapa de selecciones por semestre
   private selectionsSubject = new BehaviorSubject<SelectionsMap>({});
   selections$ = this.selectionsSubject.asObservable();
 
   // lista de materias disponibles para la carrera
   subjects: Subject[] = [
-    { name: 'Algoritmos', code: 'ALG', credits: 4 },
-    { name: 'Bases de Datos', code: 'BD', credits: 3 },
-    { name: 'Programación II', code: 'PROG2', credits: 4 },
-    { name: 'Estructuras de Datos', code: 'ED', credits: 3 },
-    { name: 'Sistemas Operativos', code: 'SO', credits: 3 }
+    { name: 'Algoritmos', code: 'ALG', credits: 4  },
+    { name: 'Bases de Datos', code: 'BD', credits: 3  },
+    { name: 'Programación II', code: 'PROG2', credits: 4  },
+    { name: 'Estructuras de Datos', code: 'ED', credits: 3  },
+    { name: 'Sistemas Operativos', code: 'SO', credits: 3  }
   ];
 
   // Mapeo de materia -> categoría para estadística (ajustable)

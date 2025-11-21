@@ -71,6 +71,102 @@
   --dark-text-primary: #f9fafb;
   --dark-text-secondary: #d1d5db;
 }
+/* Subject Card Styles */
+.subject-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.subject-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.subject-card.bg-primary-light {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-secondary);
+}
+
+/* Floating Semester Panel Styles */
+.semester-panel-floating .p-panel-content {
+  background: var(--color-gray-100);
+  border: none !important;
+  padding: 0 !important;
+}
+
+.semester-panel-floating .p-panel {
+  background: var(--color-gray-100);
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.semester-panel-floating .p-panel-header {
+  background: var(--color-primary) !important;
+  border: 1px solid var(--color-gray-200) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  padding: 0 !important;
+}
+
+ 
+
+.semester-panel-floating .p-panel-header .p-panel-toggleable-content {
+  display: none !important;
+}
+
+/* Asegurar que cualquier elemento hijo del ícono nativo también esté oculto */
+.semester-panel-floating .p-panel-header .p-panel-header-icon * {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.semester-header-clickable {
+  padding: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.semester-header-clickable:hover {
+  background-color: var(--color-gray-50);
+  border-radius: 0.5rem;
+}
+
+.semester-panel-floating .p-panel-header .pi {
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+}
+
+.semester-panel-floating .p-panel-content-wrapper {
+  background: transparent !important;
+  border: none !important;
+  padding-top: 0.5rem !important;
+}
+
+/* Floating Subject Cards */
+.subject-card-floating {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subject-card-floating:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.subject-card-floating.bg-primary-light {
+  background-color: var(--color-primary-light) !important;
+  border-color: var(--color-secondary) !important;
+  box-shadow: 0 2px 8px rgba(25, 138, 44, 0.2) !important;
+}
 
 .container-sidebar {
   background-color: var(--color-primary);
@@ -79,7 +175,7 @@
 
 /* Fondo Secundario */
 .bg-secondary {
-  background-color: var(--bg-secondary);
+  background-color: var(--color-gray-100);
   color: var(--text-primary);
 }
 
@@ -91,13 +187,14 @@
 
 /* Contenedores Base */
 .container-primary {
-  background-color: var(--color-gray-100);
+  background-color: var(--color-primary);
+ 
  
 }
 .container-header {
   background-color: var(--color-gray-100);
-  border-top-right-radius: var(--radius-md);
-  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-lg);
+  border-top-left-radius: var(--radius-lg);
   padding: var(--spacing-xs);
   border-bottom: 1px solid var(--color-primary);
 }
@@ -110,7 +207,7 @@
 .container-shearch {
   background-color: var(--color-primary);
   border-radius: var(--radius-md);
-  padding: var(--spacing-xs);
+  padding-right: var(--spacing-md);
   border: 1px solid var(--color-gray-300)
 }
 
@@ -149,6 +246,8 @@
 /* Colores Primarios */
 .bg-primary {
   background-color: var(--color-primary);
+  border-top-right-radius: var(--radius-lg);
+  border-top-left-radius: var(--radius-lg);
 }
 
 .bg-primary-dark {
@@ -157,11 +256,13 @@
 
 .bg-primary-light {
   background-color: var(--color-primary-light);
+  border-top-right-radius: var(--radius-lg);
+  border-top-left-radius: var(--radius-lg);
 }
 
 /* Colores Secundarios */
 .bg-secondary-custom {
-  background-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .bg-secondary-dark {
@@ -240,6 +341,24 @@
   width: min(100%, 16rem);
 }
 
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.search-input {
+  padding-left: 2.2rem; /* espacio para el ícono */
+}
+
 @media (min-width: 768px) {
   .shearch-field {
     width: 16rem;
@@ -265,17 +384,3 @@
   max-width: 16rem;
 }
 
-/* Subject Card Styles */
-.subject-card {
-  transition: all 0.2s ease-in-out;
-}
-
-.subject-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
-}
-
-.subject-card.bg-primary-light {
-  background-color: var(--color-primary-light);
-  border-color: var(--color-primary-dark);
-}

@@ -13,34 +13,34 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterOutlet,  PanelMenuModule, AppHeader, AppSidebar],
   template: `
-   <div class="layout-shell flex bg-primary-light min-h-screen relative">
+   <div class="layout-shell flex  container-primary min-h-screen relative mt-4 ">
       <!-- Desktop Sidebar -->
       <nav 
         *ngIf="isDesktop && sidebarVisible" 
-        class="layout-sidebar w-[clamp(15rem,18vw,19rem)] fixed left-0 top-0 min-h-screen max-h-screen border-r border-primary-dark/10 container-sidebar text-inverse z-[1100]">
-        <div class="flex justify-center w-full h-full">
+        class="layout-sidebar w-[clamp(15rem,18vw,19rem)] fixed left-0 top-0 min-h-screen max-h-screen   border-primary-dark/10 container-sidebar text-inverse z-[1100]">
+        <div class="container flex justify-center w-full ">
           <app-sidebar></app-sidebar>
         </div>
       </nav>
 
-      <!-- Mobile Sidebar Overlay -->
+      <!-- Mobile Sidebar Ove -->
       <div *ngIf="!isDesktop && sidebarVisible" class="fixed inset-0 z-[1200] lg:hidden">
         <div class="absolute inset-0 bg-black/50" (click)="closeSidebar()"></div>
         <div class="relative h-full w-[min(80vw,18rem)] bg-primary text-base-primary shadow-xl">
           <div class="flex justify-between items-center p-4 border-b border-primary-dark/40">
-            <h2 class="text-xl font-semibold">Menú</h2>
-            <button class="text-2xl hover:text-warning transition-colors" (click)="closeSidebar()" aria-label="Cerrar menú">
+             
+            <button class="text-2xl bg-secondary-custom hover:text-warning transition-colors" (click)="closeSidebar()" aria-label="Cerrar menú">
               ✕
             </button>
           </div>
-          <div class="h-[calc(100%-4rem)] overflow-y-auto">
-            <app-sidebar></app-sidebar>
+          <div class="h-[calc(100%-4rem)] overflow-y-auto min-h-lvh">
+            <app-sidebar ></app-sidebar>
           </div>
         </div>
       </div>
 
       <div 
-        class="layout-main flex flex-col flex-1 min-h-screen transition-all duration-300"
+        class="layout-main flex flex-col flex-1 min-h-screen container-header   transition-all duration-300 first-line:"
         [style.marginLeft]="desktopMargin">
         <!-- Header -->
         <div class="container-header flex-shrink-0">
@@ -48,8 +48,8 @@ import { Subscription } from 'rxjs';
         </div>
 
         <!-- Main Content - Con scroll -->
-        <main class="flex-1 container-primary overflow-y-auto">
-          <div class="p-4 lg:p-8 text-base-primary h-full min-h-[calc(100vh-5rem)]">
+        <main class="flex-1 bg-secondary overflow-y-auto ">
+          <div class="p-4 lg:p-8 text-base-primary h-full min-h-[calc(100vh-5rem)] ">
             <router-outlet />
           </div>
         </main>

@@ -4,8 +4,10 @@ import { CommonModule } from '@angular/common';
 import { PanelModule } from 'primeng/panel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CardModule } from 'primeng/card';
-import { DashboardService, SelectionsMap } from '../../services/dashboard.service';
+import { DashboardFilters, DashboardService, SelectionsMap } from '../../services/dashboard.service';
+import { SemesterService } from '../../services/semester.service';
 import { Subscription } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
 interface Subject {
   name: string;
@@ -18,37 +20,44 @@ interface Subject {
 @Component({
   selector: 'app-semester',
   standalone: true,
-  imports: [PanelModule, CheckboxModule, CardModule, FormsModule, CommonModule],
+  imports: [PanelModule, CheckboxModule, CardModule, FormsModule, CommonModule, HttpClientModule],
   template: `
     <div class="w-full flex flex-col gap-3">
       <div class="flex items-center justify-between w-full py-3">
-        <h1 class="m-0">Materias</h1>
-        <button 
-          class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors" 
-          (click)="clearAllSelections()">
-          Limpiar
-        </button>
+        
+        
       </div>
       
       <p-panel 
         *ngFor="let semester of semesters" 
         [toggleable]="true"
-        [collapsed]="true"
-        styleClass="mb-2">
+        [collapsed]="!isExpanded[semester.value]"
+        (onAfterToggle)="onPanelAfterToggle(semester.value, $event)"
+        styleClass="semester-panel-floating ">
+        
         <ng-template pTemplate="header">
-          <div class="flex items-center justify-between w-full pr-4">
-            <span class="font-semibold">Semestre {{ semester.value }}</span>
-            <span class="text-sm opacity-60 ml-auto">
-              {{ getSelectedCount(semester.value) }}/{{ subjects.length }} materias seleccionadas
-            </span>
+          <div 
+            class="flex items-center justify-between w-full pr-4 cursor-pointer semester-header-clickable"
+            (click)="toggleSemester(semester.value)">
+            <span class="font-semibold px-4">Semestre {{ semester.value }}</span>
+            <div class="flex items-center gap-1 ml-auto">
+              <span class="text-sm opacity-70">
+                {{ getSelectedCount(semester.value) }}/{{ subjectsBySemester[semester.value]?.length || 0 }} materias
+                <span class="px-2">•</span>
+                {{ getCreditsCount(semester.value) }}/{{ getTotalCredits(semester.value) }} créditos
+              </span>
+               
+            </div>
+           
           </div>
         </ng-template>
-        <div class="p-4">
+        <div class="p-2 pt-4">
           <div class="flex flex-col gap-3">
             <div 
-              *ngFor="let subject of subjects" 
-              class="subject-card flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors cursor-pointer"
+              *ngFor="let subject of subjectsBySemester[semester.value]" 
+              class="subject-card-floating flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer border border-gray-100"
               [class.bg-primary-light]="isSelected(semester.value, subject)"
+              [class.border-primary]="isSelected(semester.value, subject)"
               (click)="toggleSubject(semester.value, subject)">
               <p-checkbox 
                 [binary]="true"
@@ -59,7 +68,7 @@ interface Subject {
               
               <div class="flex-1 flex flex-col gap-1">
                 <div class="flex items-center gap-2">
-                  <span class="text-xs font-mono text-gray-600">{{ subject.code }}</span>
+       
                   <span class="text-sm font-semibold">{{ subject.name }}</span>
                 </div>
                 <span class="text-xs text-gray-500" *ngIf="subject.status">
@@ -72,7 +81,14 @@ interface Subject {
                   <div class="text-sm font-semibold">{{ subject.credits }}</div>
                   <div class="text-xs text-gray-500">créditos</div>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-primary-dark text-white flex items-center justify-center font-bold text-lg" *ngIf="subject.academicPeriod">
+                <div 
+                  class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg"
+                  [ngClass]="{
+                    'bg-success text-white': subject.academicPeriod === 'A',
+                    'bg-info text-white': subject.academicPeriod === 'B',
+                    'bg-gray-300 text-gray-900': subject.academicPeriod !== 'A' && subject.academicPeriod !== 'B'
+                  }"
+                  *ngIf="subject.academicPeriod">
                   {{ subject.academicPeriod }}
                 </div>
               </div>
@@ -84,68 +100,77 @@ interface Subject {
   `,
 })
 export class Semester implements OnInit, OnDestroy {
-  semesters = [
-    { title: 'Semestre 1', value: '1' },
-    { title: 'Semestre 2', value: '2' },
-    { title: 'Semestre 3', value: '3' },
-    { title: 'Semestre 4', value: '4' },
-    { title: 'Semestre 5', value: '5' },
-    { title: 'Semestre 6', value: '6' },
-    { title: 'Semestre 7', value: '7' },
-    { title: 'Semestre 8', value: '8' },
-    { title: 'Semestre 9', value: '9' },
-    { title: 'Semestre 10', value: '10' }
-  ];
-
-  subjects!: Subject[];
+  semesters: Array<{ title: string; value: string }> = [];
+  subjectsBySemester: { [key: string]: Subject[] } = {};
   selectedSubjects: { [key: string]: Subject[] } = {};
   subjectCheckboxes: { [key: string]: boolean } = {};
+  isExpanded: { [key: string]: boolean } = {};
   private subscription?: Subscription;
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private dashboardFilters: DashboardService,
+    private semesterService: SemesterService
+  ) {}
 
   ngOnInit() {
-    // Obtener lista de materias del servicio y agregar datos por defecto si no existen
-    this.subjects = this.dashboardService.subjects.map(subject => {
-      const extendedSubject: Subject = {
-        ...subject,
-        status: 'Disponible',
-        academicPeriod: this.getRandomPeriod()
-      };
-      return extendedSubject;
-    });
+    const curriculumId = 1;  
+    this.semesterService.getCoursesInCurriculumWithDetails(curriculumId).subscribe(apiSubjects => {
+    
+      this.subjectsBySemester = {};
+      const semestersSet = new Set<string>();
+      apiSubjects.forEach((sub: any) => {
+        const semValue = String(sub.semester);
+        semestersSet.add(semValue);
+        if (!this.subjectsBySemester[semValue]) this.subjectsBySemester[semValue] = [];
+        this.subjectsBySemester[semValue].push({
+          name: sub.name,
+          code: sub.code,
+          credits: sub.credits || 0,
+          academicPeriod: (sub.calendar || '').trim()
+        });
+      });
+      // Generar array de semestres dinámicamente
+      this.semesters = Array.from(semestersSet).sort().map(val => ({ title: `Semestre ${val}`, value: val }));
 
-    // Inicializar selectedSubjects y checkboxes para cada semestre
-    this.semesters.forEach(semester => {
-      this.selectedSubjects[semester.value] = [];
-      this.subjects.forEach(subject => {
-        const key = `${semester.value}_${subject.code}`;
-        this.subjectCheckboxes[key] = false;
+      // Inicializar selectedSubjects, checkboxes y estado de expansión para cada semestre
+      this.semesters.forEach(semester => {
+        this.selectedSubjects[semester.value] = [];
+        this.isExpanded[semester.value] = false;
+        (this.subjectsBySemester[semester.value] || []).forEach(subject => {
+          const key = `${semester.value}_${subject.code}`;
+          this.subjectCheckboxes[key] = false;
+        });
       });
     });
 
     // Suscribirse a las selecciones del servicio
     this.subscription = this.dashboardService.selections$.subscribe((selections: SelectionsMap) => {
-      // Sincronizar el estado local con el servicio
       this.semesters.forEach(semester => {
         const selected = selections && selections[semester.value] ? [...selections[semester.value]] : [];
         this.selectedSubjects[semester.value] = selected;
-        
-        // Actualizar checkboxes
-        this.subjects.forEach(subject => {
+        (this.subjectsBySemester[semester.value] || []).forEach(subject => {
           const key = `${semester.value}_${subject.code}`;
           this.subjectCheckboxes[key] = selected.some(s => s.code === subject.code);
         });
       });
     });
-  }
 
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
+    this.dashboardFilters.filters$.subscribe(filters => {
+      this.applyFilters(filters);
+    });
   }
 
   getSelectedCount(semesterValue: string): number {
     return this.selectedSubjects[semesterValue]?.length || 0;
+  }
+
+  getCreditsCount(semesterValue: string): number {
+    return (this.selectedSubjects[semesterValue] || []).reduce((acc, subj) => acc + subj.credits, 0);
+  }
+
+  getTotalCredits(semesterValue: string): number {
+    return (this.subjectsBySemester[semesterValue] || []).reduce((acc, subj) => acc + subj.credits, 0);
   }
 
   isSelected(semesterValue: string, subject: Subject): boolean {
@@ -156,13 +181,11 @@ export class Semester implements OnInit, OnDestroy {
   toggleSubject(semesterValue: string, subject: Subject) {
     const selected = this.selectedSubjects[semesterValue] || [];
     const index = selected.findIndex(s => s.code === subject.code);
-    
     if (index >= 0) {
       selected.splice(index, 1);
     } else {
       selected.push(subject);
     }
-    
     this.selectedSubjects[semesterValue] = selected;
     this.updateCheckboxState(semesterValue, subject);
     this.dashboardService.updateSelection(semesterValue, this.selectedSubjects[semesterValue]);
@@ -170,7 +193,6 @@ export class Semester implements OnInit, OnDestroy {
 
   onCheckboxChange(semesterValue: string, subject: Subject, checked: boolean) {
     const selected = this.selectedSubjects[semesterValue] || [];
-    
     if (checked) {
       if (!selected.some(s => s.code === subject.code)) {
         selected.push(subject);
@@ -181,7 +203,6 @@ export class Semester implements OnInit, OnDestroy {
         selected.splice(index, 1);
       }
     }
-    
     this.selectedSubjects[semesterValue] = selected;
     this.dashboardService.updateSelection(semesterValue, this.selectedSubjects[semesterValue]);
   }
@@ -191,10 +212,20 @@ export class Semester implements OnInit, OnDestroy {
     this.subjectCheckboxes[key] = this.isSelected(semesterValue, subject);
   }
 
+  toggleSemester(semesterValue: string) {
+    this.isExpanded[semesterValue] = !this.isExpanded[semesterValue];
+  }
+
+  onPanelAfterToggle(semesterValue: string, event: any) {
+    if (event) {
+      this.isExpanded[semesterValue] = !event.collapsed;
+    }
+  }
+
   clearAllSelections() {
     this.semesters.forEach(semester => {
       this.selectedSubjects[semester.value] = [];
-      this.subjects.forEach(subject => {
+      (this.subjectsBySemester[semester.value] || []).forEach(subject => {
         const key = `${semester.value}_${subject.code}`;
         this.subjectCheckboxes[key] = false;
       });
@@ -202,8 +233,24 @@ export class Semester implements OnInit, OnDestroy {
     });
   }
 
-  private getRandomPeriod(): string {
-    const periods = ['A', 'B', 'C', 'D', 'E'];
-    return periods[Math.floor(Math.random() * periods.length)];
+  applyFilters(filters: DashboardFilters) {
+    // Si quieres filtrar materias, puedes hacerlo aquí por semestre
+    Object.keys(this.subjectsBySemester).forEach(sem => {
+      this.subjectsBySemester[sem] = this.subjectsBySemester[sem]
+        .filter(sub =>
+          sub.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+          sub.code.toLowerCase().includes(filters.search.toLowerCase())
+        )
+        .filter(sub =>
+          !filters.calendar || sub.academicPeriod === filters.calendar
+        )
+        .filter(sub =>
+          filters.onlyRemaining ? sub.status === 'Disponible' : true
+        );
+    });
+  }
+  
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 }
