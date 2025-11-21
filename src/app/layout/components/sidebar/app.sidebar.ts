@@ -6,6 +6,7 @@ import { BadgeModule } from 'primeng/badge';
 import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 import { RouterLink } from "@angular/router";
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -71,6 +72,11 @@ export class AppSidebar {
   topItems: MenuItem[] | undefined;
   BottomItems: MenuItem[] | undefined;
 
+  constructor(  private auth: AuthService) {}
+
+  logout() {
+    this.auth.logout(window.location.origin);
+  }
   ngOnInit() {
     this.topItems = [
       {
@@ -108,9 +114,9 @@ export class AppSidebar {
               routerLink: '/profile',
             },
             {
-              label: 'Ajustes',
-              icon: 'pi pi-cog',
-              routerLink: '/settings',
+              label: 'Salir',
+              icon: 'pi pi-sign-out',
+              command: () => {this.logout();},
             }
           ]
         }
