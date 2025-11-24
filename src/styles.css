@@ -170,7 +170,7 @@
 
 .container-sidebar {
   background-color: var(--color-primary);
-  padding: var(--spacing-md);
+  padding-top: var(--spacing-lg);
 }
 
 /* Fondo Secundario */
@@ -197,6 +197,14 @@
   border-top-left-radius: var(--radius-lg);
   padding: var(--spacing-xs);
   border-bottom: 1px solid var(--color-primary);
+}
+.container-main {
+  background-color: var(--color-gray-100);
+  border-top-right-radius: var(--radius-lg);
+  border-top-left-radius: var(--radius-lg);
+  padding: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-primary);
+ 
 }
 
 .container-secondary {
@@ -383,4 +391,245 @@
 .shearch-menubar .p-menubar-end {
   max-width: 16rem;
 }
+
+/* ------------------------------------------------------------------ */
+/* Migrated styles for yourclass component                             */
+/* These rules were moved from the component-scoped styles into global */
+/* so they can be reused and kept consistent across the app.          */
+/* ------------------------------------------------------------------ */
+
+.hello-container {
+  width: 100%;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.hello-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.hello-description {
+  margin: .3rem 0 0 0;
+  font-size: .95rem;
+  opacity: 0.65;
+  line-height: 1.4rem;
+}
+
+.hello-major {
+  margin-top: .5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5b5bd7;
+}
+
+/* Styles for PrimeNG hello card */
+.hello-card {
+  padding: 1rem !important;
+  border-radius: 12px !important;
+  background: linear-gradient(180deg,#ffffff,#fbfbff) !important;
+  box-shadow: 0 8px 30px rgba(12,10,15,0.04);
+  margin-bottom: 0.75rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.header-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hello-major-tag {
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+@media (max-width: 650px) {
+  .hello-title {
+    font-size: 1.7rem;
+  }
+}
+
+.your-class-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1rem 0;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.active-tab {
+  opacity: 1;
+  font-weight: 600;
+  background: #eef2ff;
+}
+
+/* Card */
+.course-card {
+  background:#e5fbe7;
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+  transition: .2s;
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+}
+
+.course-icon {
+  background: white;
+  border-radius: 12px;
+  padding: .6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+}
+
+.course-icon img {
+  width: 45px;
+  height: 45px;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.details {
+  margin-top: .2rem;
+  font-size: .9rem;
+  opacity: 0.7;
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  
+}
+
+/* New styles for p-card layout */
+.courses-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.course-card-square {
+  border-radius: 14px !important;
+  background: linear-gradient(180deg,#fff,#fff) !important;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.06);
+  padding-bottom: 6px !important;
+}
+
+.card-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+}
+
+.card-image img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card-image {
+  min-width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  
+}
+
+.dot { opacity: 0.6; padding: 0 6px }
+
+.container-recomendation{
+  width: 100%;
+  margin-inline: 1rem;
+  background: var(--color-primary);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  border-radius: var(--radius-md);
+}
+
+.container-table-results{
+  width: 100%;
+  background: var(--color-primary);
+  padding-top: 1rem;
+padding-inline: 1rem;
+  
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  border-radius: var(--radius-md);
+
+}
+
 

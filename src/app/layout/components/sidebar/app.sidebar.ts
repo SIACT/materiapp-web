@@ -13,9 +13,9 @@ import { AuthService } from '../../../core/auth/auth.service';
   standalone: true,
   imports: [MenuModule, BadgeModule, RippleModule, AvatarModule, CommonModule, RouterLink],
   template: `
-  <section class="min-h-lvh flex flex-col">
-    <div class="flex flex-col flex-1 gap-7 overflow-y-auto min-h-full ">
-      <div>
+  <section class="min-h-lvh flex flex-col p-0">
+    <div class="flex flex-col flex-1 gap-7 overflow-y-auto min-h-full p-0">
+      <div class="p-0">
       <p-menu [model]="topItems"  styleClass=" min-w-full flex-1 !border-0">
         <ng-template #start>
           <span class="inline-flex items-center gap-1 px-2 py-3">
@@ -55,7 +55,7 @@ import { AuthService } from '../../../core/auth/auth.service';
       </p-menu>
     </div>
     <div class="flex-none pb-8">
-      <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200">
+      <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-500 dark:hover:bg-surface-100 rounded-none cursor-pointer transition-colors duration-200">
         <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
         <span class="inline-flex flex-col">
           <span class="font-bold">Amy Elsner</span>
@@ -82,25 +82,21 @@ export class AppSidebar {
       {
         label: 'Carreras',
         items: [
-          {
-            label: 'Inicio',
-            icon: 'pi pi-home',
-            routerLink: '/',
-          },
+        
           {
             label: 'Mi Pensum',
             icon: 'pi pi-graduation-cap',
-            routerLink: '/pensum/materias',
+            routerLink: '/app/pensum/materias',
           },
           {
             label: 'Recomendacion',
             icon: 'pi pi-microchip-ai',
-            routerLink: '/recommendation/ia',
+            routerLink: '/app/recommendation/ia',
           },
           {
             label: 'Curriculum',
             icon: 'pi pi-calendar',
-            routerLink: '/recommendation/ia',
+            routerLink: '/app/stadistics/mypensum-stadistics',
           }
         ]
       },
@@ -111,7 +107,7 @@ export class AppSidebar {
             {
               label: 'Perfil',
               icon: 'pi pi-user',
-              routerLink: '/profile',
+              routerLink: '/app/profile',
             },
             {
               label: 'Salir',

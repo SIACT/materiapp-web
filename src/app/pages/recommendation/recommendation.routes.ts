@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
-import { AppMessage } from './components/message/message';
+ 
+import { LayoutRecommedation } from './layout.recommedation';
  
 
 export default [
     {
         path: 'ia', 
         data: { breadcrumb: 'Button' },
-        component: AppMessage
+        component: LayoutRecommedation
     }
 ] as Routes;

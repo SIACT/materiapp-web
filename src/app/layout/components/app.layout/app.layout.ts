@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 import { AppHeader } from "../app.header/app.header";
@@ -11,17 +11,31 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet,  PanelMenuModule, AppHeader, AppSidebar],
+  imports: [CommonModule, RouterOutlet, RouterLink, PanelMenuModule, AppHeader, AppSidebar],
   template: `
    <div class="layout-shell flex  container-primary min-h-screen relative mt-4 ">
       <!-- Desktop Sidebar -->
       <nav 
         *ngIf="isDesktop && sidebarVisible" 
-        class="layout-sidebar w-[clamp(15rem,18vw,19rem)] fixed left-0 top-0 min-h-screen max-h-screen   border-primary-dark/10 container-sidebar text-inverse z-[1100]">
+        class="layout-sidebar w-[clamp(15rem,18vw,19rem)] fixed  left-0 top-0 min-h-screen max-h-screen   border-primary-dark/10 container-sidebar text-inverse z-[1100]">
         <div class="container flex justify-center w-full ">
           <app-sidebar></app-sidebar>
         </div>
       </nav>
+
+      <!-- Collapsed icon bar when sidebar is hidden (desktop) -->
+      <div *ngIf="isDesktop && !sidebarVisible" class="fixed left-0 top-0 h-screen z-[1150] flex flex-col items-center justify-center gap-2 w-12 container-sidebar text-inverse ">
+        <div class="w-full flex flex-col  text-green-600 pr-10">
+          
+          <a routerLink="/app/pensum/materias" class="w-10 h-10 flex items-center justify-center rounded hover:bg-surface-100" title="Mi Pensum">
+            <span class="pi pi-graduation-cap text-lg"></span>
+          </a>
+          <a routerLink="/app/recommendation/ia" class="w-10 h-10 flex items-center justify-center rounded hover:bg-surface-100" title="Recomendación">
+            <span class="pi pi-microchip-ai text-lg"></span>
+          </a>
+           
+        </div>
+      </div>
 
       <!-- Mobile Sidebar Ove -->
       <div *ngIf="!isDesktop && sidebarVisible" class="fixed inset-0 z-[1200] lg:hidden">
@@ -40,7 +54,7 @@ import { Subscription } from 'rxjs';
       </div>
 
       <div 
-        class="layout-main flex flex-col flex-1 min-h-screen container-header   transition-all duration-300 first-line:"
+        class="layout-main flex flex-col flex-1 min-h-screen  container-main   transition-all duration-300 first-line:"
         [style.marginLeft]="desktopMargin">
         <!-- Header -->
         <div class="container-header flex-shrink-0">
@@ -48,7 +62,7 @@ import { Subscription } from 'rxjs';
         </div>
 
         <!-- Main Content - Con scroll -->
-        <main class="flex-1 bg-secondary overflow-y-auto ">
+        <main class="flex-1 bg-secondary overflow-y-auto  ">
           <div class="p-4 lg:p-8 text-base-primary h-full min-h-[calc(100vh-5rem)] ">
             <router-outlet />
           </div>
@@ -69,7 +83,12 @@ export class AppLayout implements OnInit, OnDestroy {
   constructor(private layoutService: LayoutService) {}
 
   get desktopMargin(): string {
-    return this.isDesktop && this.sidebarVisible ? this.desktopSidebarWidth : '0px';
+    // If desktop and sidebar visible -> full sidebar width
+    // If desktop and sidebar hidden -> keep a small margin for the collapsed icon bar (w-12 => 3rem)
+    if (this.isDesktop) {
+      return this.sidebarVisible ? this.desktopSidebarWidth : '3rem';
+    }
+    return '0px';
   }
 
   ngOnInit() {
@@ -170,6 +189,10 @@ export class AppLayout implements OnInit, OnDestroy {
     if (!this.isDesktop) {
       this.layoutService.setSidebarVisibility(false);
     }
+  }
+
+  openSidebar() {
+    this.layoutService.setSidebarVisibility(true);
   }
 
   private updateViewportFlags() {

@@ -12,7 +12,9 @@ export function initializeKeycloak(keycloak: KeycloakService) {
                     clientId: 'materiapp-web'
                 },
                 initOptions: {
-                    onLoad: 'login-required',
+                    // Use 'check-sso' so the app does NOT force a login at startup.
+                    // This allows the public `AppHome` to render without redirecting to Keycloak.
+                    onLoad: 'check-sso',
                     checkLoginIframe: true,
                     pkceMethod: 'S256',
                     silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html' //ruta fija para el silent check sso
