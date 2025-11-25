@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-redirect',
@@ -18,7 +19,12 @@ import { ActivatedRoute } from '@angular/router';
   `
 })
 export class LoginRedirect implements OnInit {
-  constructor(private keycloak: KeycloakService, private route: ActivatedRoute) {}
+  constructor(
+    private keycloak: KeycloakService, 
+    private route: ActivatedRoute,
+ 
+  
+  ) {}
 
   ngOnInit(): void {
     this.login();

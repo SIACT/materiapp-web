@@ -22,7 +22,6 @@ export const appConfig: ApplicationConfig = {
       deps: [KeycloakService]
     },
     provideHttpClient(withInterceptors([tokenInterceptor])),
-    provideHttpClient(),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

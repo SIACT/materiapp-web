@@ -116,8 +116,11 @@ export class Shearch implements OnInit{
   selectedOption: SelectOption | null = null;
   private menuEntries: MenuEntry[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private messageService: MessageService, private router: Router, private  dashboardFilters: DashboardService
-
+  constructor(
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService, 
+    private router: Router, 
+    private dashboardFilters: DashboardService
   ) {}
 
   ngOnInit() {

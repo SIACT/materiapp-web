@@ -5,7 +5,8 @@ import { PanelModule } from 'primeng/panel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CardModule } from 'primeng/card';
 import { DashboardFilters, DashboardService, SelectionsMap } from '../../services/dashboard.service';
-import { SemesterService } from '../../services/semester.service';
+import { CoursesInCurriculumService } from '../../../../core/services/courses-in-curriculum.service';
+ 
 import { Subscription } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -109,13 +110,12 @@ export class Semester implements OnInit, OnDestroy {
 
   constructor(
     private dashboardService: DashboardService,
-    private dashboardFilters: DashboardService,
-    private semesterService: SemesterService
+    private coursesInCurriculumService: CoursesInCurriculumService
   ) {}
 
   ngOnInit() {
     const curriculumId = 1;  
-    this.semesterService.getCoursesInCurriculumWithDetails(curriculumId).subscribe(apiSubjects => {
+    this.coursesInCurriculumService.getByCurriculum(curriculumId).subscribe(apiSubjects => {
     
       this.subjectsBySemester = {};
       const semestersSet = new Set<string>();
@@ -156,7 +156,7 @@ export class Semester implements OnInit, OnDestroy {
       });
     });
 
-    this.dashboardFilters.filters$.subscribe(filters => {
+    this.dashboardService.filters$.subscribe(filters => {
       this.applyFilters(filters);
     });
   }

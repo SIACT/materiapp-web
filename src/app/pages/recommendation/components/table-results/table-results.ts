@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+//import { RecommendationService } from '../../services/recommendation.service';
 
 interface Column {
     field: string;
@@ -26,12 +27,13 @@ interface Materia {
  ],
   template: `
     <div class="container-table-results">
-      <p-table 
+        <h1>tabladescomentar</h1>
+      <!-- <p-table 
         [columns]="cols" 
         [value]="materias" 
         [tableStyle]="{ 'min-width': '50rem' }">
 
-        <!-- HEADER -->
+         
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns">
@@ -39,8 +41,7 @@ interface Materia {
                 </th>
             </tr>
         </ng-template>
-
-        <!-- BODY -->
+ 
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
                 <td *ngFor="let col of columns">
@@ -49,35 +50,45 @@ interface Materia {
             </tr>
         </ng-template>
 
-      </p-table>
+      </p-table> -->
     </div>
   `
-})
-export class TableResults {
-    materias: Materia[] = [];
-    cols: Column[] = [];
+}) //implements OnInit
+export class TableResults   {
+    //   materias: Materia[] = [];
+    // cols: Column[] = [];
 
-    ngOnInit() {
+    // constructor(private recomendationsService: RecommendationService) {}
 
-        // ===============================
-        // 🔥 DEAD DATA (mock data)
-        // ===============================
-        this.materias = [
-            { code: 'MAT101', name: 'Calculus I', credits: 4, semester: 1, calendar: 'A' },
-            { code: 'PHY101', name: 'Physics I', credits: 4, semester: 1, calendar: 'A' },
-            { code: 'CS101',  name: 'Introduction to Programming', credits: 3, semester: 1, calendar: 'B' },
-            { code: 'ENG101', name: 'English I', credits: 2, semester: 1, calendar: 'B' }
-        ];
+    // ngOnInit() {
 
-        // ===============================
-        // 🔥 TABLE COLUMNS
-        // ===============================
-        this.cols = [
-           
-            { field: 'name', header: 'Nombre de la Materia' },
-            { field: 'credits', header: 'Créditos' },
-            { field: 'semester', header: 'Semestre' },
-            { field: 'calendar', header: 'Calendario' }
-        ];
-    }
+    //     // ============================
+    //     // 📌 DEFINIR COLUMNAS
+    //     // ============================
+    //     this.cols = [
+    //         { field: 'code', header: 'Código' },
+    //         { field: 'name', header: 'Nombre de la Materia' },
+    //         { field: 'credits', header: 'Créditos' },
+    //         { field: 'semester', header: 'Semestre' },
+    //         { field: 'calendar', header: 'Calendario' }
+    //     ];
+
+    //     // ============================
+    //     // 📌 CONSUMIR API
+    //     // ============================
+    //     this.loadRecomendations(1); 
+    // }
+
+    // loadRecomendations(studentCurriculumId: number) {
+    //     this.recomendationsService.getRecomendations(studentCurriculumId)
+    //         .subscribe({
+    //             next: (response) => {
+    //                 // El endpoint te entrega: { courses: [...] }
+    //                 this.materias = response.courses;
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error loading recomendations', err);
+    //             }
+    //         });
+    // }
 }
