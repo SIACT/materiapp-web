@@ -131,21 +131,18 @@ export class Modal implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    // Verificar que el usuario esté autenticado antes de hacer peticiones
+   
     const isLoggedIn = this.keycloak.isLoggedIn();
     
     if (!isLoggedIn) {
       console.warn('User not authenticated, modal will not be shown');
-      // No mostrar el modal si el usuario no está autenticado
+      
       this.visible = false;
       return;
     }
-
-    // Mostrar el modal solo si el usuario está autenticado
+ 
     this.visible = true;
-
-    // Cargar solo schools y curricula al inicio
-    // Los programas se cargarán cuando se seleccione una school
+ 
     this.schoolsService.getAll().subscribe({
       next: (list) => {
         this.schools = (list || []).map((s: any) => ({ id: s.id, name: s.name || s.title || `School ${s.id}` }));
@@ -172,23 +169,21 @@ export class Modal implements OnInit {
   }
 
   async onSchoolChange(schoolId: number | null): Promise<void> {
-    // Limpiar la selección de programa cuando cambia la escuela
+   
     this.form.programId = null;
     this.programs = [];
 
     if (!schoolId) {
       return;
     }
-
-    // Verificar autenticación antes de hacer la petición
+ 
     const isLoggedIn = this.keycloak.isLoggedIn();
     if (!isLoggedIn) {
       console.warn('User not authenticated');
       alert('Debes estar autenticado para cargar los programas. Por favor, inicia sesión.');
       return;
     }
-
-    // Verificar que tengamos un token válido antes de hacer la petición
+ 
     try {
       const token = await this.keycloak.getToken();
       if (!token || token.trim() === '') {
@@ -202,8 +197,7 @@ export class Modal implements OnInit {
       alert('Error de autenticación. Por favor, recarga la página.');
       return;
     }
-
-    // Cargar programas de la escuela seleccionada usando getBySchoolId
+ 
     this.loadingPrograms = true;
     this.programsService.getBySchoolId(schoolId).subscribe({
       next: (list) => {
@@ -220,7 +214,7 @@ export class Modal implements OnInit {
         if (err.status === 401) {
           console.warn('Unauthorized - token may be expired or invalid');
           console.log('Error details:', err);
-          // No redirigir automáticamente, solo mostrar mensaje
+          
           alert('Error de autenticación. Por favor, recarga la página e intenta de nuevo.');
         } else {
           alert(`Error al cargar los programas: ${err.message || 'Error desconocido'}`);
