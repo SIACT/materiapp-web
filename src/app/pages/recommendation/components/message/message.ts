@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
-//import { RecommendationService } from '../../services/recommendation.service';
+import { RecommendationService } from '../../../../core/services/recommendation.service';
+ 
  
 interface Recomendacion {
   icon: string;
@@ -16,7 +17,7 @@ interface Recomendacion {
   template: `
     <div class="flex flex-col gap-4 container-recomendation">
       <h1>descomentar card</h1>
-      <!-- <p-card
+        <p-card
         *ngFor="let item of recomendaciones"
         class="border rounded-xl shadow-sm hover:shadow-lg transition-all"
       >
@@ -34,32 +35,32 @@ interface Recomendacion {
         <p class="text-gray-600 text-sm mt-2 leading-snug px-3 pb-3">
           {{ item.subtitle }}
         </p>
-      </p-card> -->
+      </p-card>  
     </div>
   `,
 })
-export class AppMessage   {
+export class AppMessage implements OnInit   {
 
-  // recomendaciones: Recomendacion[] = [];
+  recomendaciones: Recomendacion[] = [];
 
-  // constructor(private recomendationsService: RecommendationService) {}
+  constructor(private recomendationsService: RecommendationService) {}
 
-  // ngOnInit() {
-  //   this.loadRationale(1); // ejemplo: curriculum 14
-  // }
+  ngOnInit() {
+    this.loadRationale(1); // ejemplo: curriculum 14
+  }
 
-  // loadRationale(curriculumId: number) {
-  //   this.recomendationsService.getRecomendations(curriculumId).subscribe({
-  //     next: (response) => {
-  //       this.recomendaciones = [
-  //         {
-  //           icon: 'pi pi-info-circle',
-  //           title: 'Recomendación basada en tu historial académico',
-  //           subtitle: response.rationale,
-  //         }
-  //       ];
-  //     },
-  //     error: (err) => console.error(err)
-  //   });
-  // }
+  loadRationale(curriculumId: number) {
+    this.recomendationsService.getRecomendations(curriculumId).subscribe({
+      next: (response) => {
+        this.recomendaciones = [
+          {
+            icon: 'pi pi-info-circle',
+            title: 'Recomendación basada en tu historial académico',
+            subtitle: response.rationale,
+          }
+        ];
+      },
+      error: (err) => console.error(err)
+    });
+  }
 }

@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PanelModule } from 'primeng/panel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
 import { DashboardFilters, DashboardService, SelectionsMap } from '../../services/dashboard.service';
 import { CoursesInCurriculumService } from '../../../../core/services/courses-in-curriculum.service';
+import { Modal } from '../modal/modal';
  
 import { Subscription } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
@@ -21,9 +23,33 @@ interface Subject {
 @Component({
   selector: 'app-semester',
   standalone: true,
-  imports: [PanelModule, CheckboxModule, CardModule, FormsModule, CommonModule, HttpClientModule],
+  imports: [PanelModule, CheckboxModule, CardModule, FormsModule, CommonModule, HttpClientModule, ButtonModule, Modal],
   template: `
+    <div class="grid grid-cols-2 gap-3">
+      <div class="col-span-1 container-options-pensum">
+        <p-card 
+          class="profile-card cursor-pointer transition-shadow hover:shadow-lg"
+          (click)="openProfileModal()">
+          <ng-template pTemplate="header">
+            <div class="text-base font-semibold text-primary">Perfil académico</div>
+          </ng-template>
+          <p class="text-sm text-gray-600 mb-4">
+            Completa tus datos de facultad, programa, semestre y pensum para
+            personalizar las materias sugeridas.
+          </p>
+          <div class="flex items-center gap-2 text-primary font-semibold">
+            <span>Configurar ahora</span>
+            <i class="pi pi-arrow-right text-sm"></i>
+          </div>
+        </p-card>
+      </div>
+      <div class="col-span-1">
+        <h1>Agregar semestre</h1>
+      </div>
+    </div>
     <div class="w-full flex flex-col gap-3">
+ 
+    
       <div class="flex items-center justify-between w-full py-3">
         
         
@@ -55,7 +81,7 @@ interface Subject {
         <div class="p-2 pt-4">
           <div class="flex flex-col gap-3">
             <div 
-              *ngFor="let subject of subjectsBySemester[semester.value]" 
+              *ngFor="let subject of subjectsBySemester[semester.value] || []" 
               class="subject-card-floating flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer border border-gray-100"
               [class.bg-primary-light]="isSelected(semester.value, subject)"
               [class.border-primary]="isSelected(semester.value, subject)"
@@ -98,6 +124,8 @@ interface Subject {
         </div>
       </p-panel>
     </div>
+
+    <app-modal></app-modal>
   `,
 })
 export class Semester implements OnInit, OnDestroy {
@@ -107,6 +135,7 @@ export class Semester implements OnInit, OnDestroy {
   subjectCheckboxes: { [key: string]: boolean } = {};
   isExpanded: { [key: string]: boolean } = {};
   private subscription?: Subscription;
+  @ViewChild(Modal) profileModal?: Modal;
 
   constructor(
     private dashboardService: DashboardService,
@@ -231,6 +260,10 @@ export class Semester implements OnInit, OnDestroy {
       });
       this.dashboardService.updateSelection(semester.value, []);
     });
+  }
+
+  openProfileModal() {
+    this.profileModal?.open();
   }
 
   applyFilters(filters: DashboardFilters) {

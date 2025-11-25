@@ -21,6 +21,13 @@ export class CurriculaService {
     return this.http.get<Curriculum>(`${this.base}${API_URLS.CURRICULA.GET_ONE(id)}`);
   }
 
+  findByProgram(programId: number): Observable<Curriculum[]> {
+    return this.http.get<Curriculum[]>(
+      `${this.base}${API_URLS.CURRICULA.FIND_BY_PROGRAM(programId)}`
+    );
+  }
+
+
   create(data: Partial<Curriculum>): Observable<Curriculum> {
     return this.http.post<Curriculum>(`${this.base}${API_URLS.CURRICULA.CREATE}`, data);
   }

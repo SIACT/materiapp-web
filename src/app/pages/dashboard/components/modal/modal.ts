@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from "primeng/button";
 import { SelectModule } from "primeng/select";
 import { KeycloakService } from 'keycloak-angular';
 import { firstValueFrom } from 'rxjs';
-import { StudentsService } from '../../../../core/services/student.service';
 import { ProgramsService } from '../../../../core/services/programs.service';
 import { SchoolsService } from '../../../../core/services/schools.service';
 import { CurriculaService } from '../../../../core/services/curricula.service';
+import { ProfileSelectionService } from '../../../../core/services/profile-selection.service';
+import { StudentCurriculaService } from '../../../../core/services/student-curricula.service';
 
 @Component({
   selector: 'app-modal',
@@ -46,6 +46,7 @@ import { CurriculaService } from '../../../../core/services/curricula.service';
           <p-select
             id="program-select"
             [(ngModel)]="form.programId"
+            (ngModelChange)="onProgramChange($event)"
             [options]="programs"
             optionLabel="name"
             optionValue="id"
@@ -63,6 +64,7 @@ import { CurriculaService } from '../../../../core/services/curricula.service';
           <p-select
             id="semester-select"
             [(ngModel)]="form.semester"
+            (ngModelChange)="onSemesterChange($event)"
             [options]="semesterOptions"
             placeholder="Selecciona un semestre"
             [showClear]="true"
@@ -75,6 +77,7 @@ import { CurriculaService } from '../../../../core/services/curricula.service';
           <p-select
             id="curriculum-select"
             [(ngModel)]="form.curriculumId"
+            (ngModelChange)="onCurriculumChange($event)"
             [options]="curricula"
             optionLabel="version"
             optionValue="id"
@@ -104,6 +107,8 @@ import { CurriculaService } from '../../../../core/services/curricula.service';
 })
 export class Modal implements OnInit {
   visible = false;
+  private dataLoaded = false;
+  private loadingInitialData = false;
 
   form = {
     programId: null as number | null,
@@ -122,131 +127,139 @@ export class Modal implements OnInit {
   loadingPrograms = false;
 
   constructor(
-    private students: StudentsService,
     private programsService: ProgramsService,
     private schoolsService: SchoolsService,
     private curriculaService: CurriculaService,
     private keycloak: KeycloakService,
-    private router: Router
+    private profileSelection: ProfileSelectionService,
+    private studentCurricula: StudentCurriculaService
   ) {}
 
   async ngOnInit(): Promise<void> {
-   
-    const isLoggedIn = this.keycloak.isLoggedIn();
-    
+    const cachedSelection = this.profileSelection.getSnapshot();
+    this.form = {
+      ...this.form,
+      ...cachedSelection
+    };
+  }
+ 
+  async open(): Promise<void> {
+    const isLoggedIn = await this.keycloak.isLoggedIn();
     if (!isLoggedIn) {
-      console.warn('User not authenticated, modal will not be shown');
-      
-      this.visible = false;
+      alert('Debes iniciar sesión para continuar.');
       return;
     }
- 
+
+    await this.loadInitialData();
+
+    if (this.form.schoolId) {
+      await this.loadProgramsBySchool(this.form.schoolId);
+    }
+
     this.visible = true;
- 
-    this.schoolsService.getAll().subscribe({
-      next: (list) => {
-        this.schools = (list || []).map((s: any) => ({ id: s.id, name: s.name || s.title || `School ${s.id}` }));
-      },
-      error: (err) => {
-        console.error('Failed to load schools', err);
-        if (err.status === 401) {
-          console.warn('Unauthorized - user may need to login again');
-        }
-      }
-    });
-    
-    this.curriculaService.getAll().subscribe({
-      next: (list) => {
-        this.curricula = (list || []).map((c: any) => ({ id: c.id, version: c.version || `Pensum ${c.id}` }));
-      },
-      error: (err) => {
-        console.error('Failed to load curricula', err);
-        if (err.status === 401) {
-          console.warn('Unauthorized - user may need to login again');
-        }
-      }
-    });
   }
 
   async onSchoolChange(schoolId: number | null): Promise<void> {
-   
     this.form.programId = null;
     this.programs = [];
+    this.profileSelection.patchState({
+      schoolId,
+      programId: null
+    });
 
     if (!schoolId) {
       return;
     }
  
-    const isLoggedIn = this.keycloak.isLoggedIn();
-    if (!isLoggedIn) {
-      console.warn('User not authenticated');
-      alert('Debes estar autenticado para cargar los programas. Por favor, inicia sesión.');
-      return;
-    }
- 
-    try {
-      const token = await this.keycloak.getToken();
-      if (!token || token.trim() === '') {
-        console.warn('No token available');
-        alert('Error de autenticación. Por favor, recarga la página.');
-        return;
-      }
-      console.log('Token available, length:', token.length);
-    } catch (error) {
-      console.error('Error getting token:', error);
-      alert('Error de autenticación. Por favor, recarga la página.');
-      return;
-    }
- 
-    this.loadingPrograms = true;
-    this.programsService.getBySchoolId(schoolId).subscribe({
-      next: (list) => {
-        this.programs = (list || []).map((p: any) => ({ 
-          id: p.id, 
-          name: p.name || p.title || `Program ${p.id}` 
-        }));
-        this.loadingPrograms = false;
-      },
-      error: (err) => {
-        console.error('Failed to load programs for school', schoolId, err);
-        this.loadingPrograms = false;
-        
-        if (err.status === 401) {
-          console.warn('Unauthorized - token may be expired or invalid');
-          console.log('Error details:', err);
-          
-          alert('Error de autenticación. Por favor, recarga la página e intenta de nuevo.');
-        } else {
-          alert(`Error al cargar los programas: ${err.message || 'Error desconocido'}`);
-        }
-      }
-    });
+    await this.loadProgramsBySchool(schoolId);
+  }
+
+  onProgramChange(programId: number | null) {
+    this.profileSelection.patchState({ programId });
+  }
+
+  onSemesterChange(semester: number | null) {
+    this.profileSelection.patchState({ semester });
+  }
+
+  onCurriculumChange(curriculumId: number | null) {
+    this.profileSelection.patchState({ curriculumId });
   }
 
   async submit() {
-    const keycloakId = this.keycloak.getKeycloakInstance().subject;
-
- 
     if (!this.form.programId || !this.form.semester || !this.form.schoolId || !this.form.curriculumId) {
       alert('Por favor selecciona programa, semestre, pensum y facultad.');
       return;
     }
 
     try {
-      await firstValueFrom(this.students.create({
-        keycloakId,
-        programId: this.form.programId,
-        semester: this.form.semester,
-        schoolId: this.form.schoolId,
-        curriculumId: this.form.curriculumId,
-      }));
+      await firstValueFrom(
+        this.studentCurricula.createByMe({
+          semester: this.form.semester,
+          curriculumId: this.form.curriculumId
+        })
+      );
 
+      this.profileSelection.setState({ ...this.form });
       this.visible = false;
-      this.router.navigate(['/app']);
     } catch (err) {
       console.error('Failed to create student record', err);
       alert('Hubo un problema guardando tu información. Intenta de nuevo.');
     }
   }
 
+  private async loadInitialData(): Promise<void> {
+    if (this.dataLoaded || this.loadingInitialData) {
+      return;
+    }
+
+    this.loadingInitialData = true;
+    try {
+      const [schoolsResponse, curriculaResponse] = await Promise.all([
+        firstValueFrom(this.schoolsService.getAll()),
+        firstValueFrom(this.curriculaService.getAll())
+      ]);
+
+      this.schools = (schoolsResponse || []).map((s: any) => ({
+        id: s.id,
+        name: s.name || s.title || `School ${s.id}`
+      }));
+
+      this.curricula = (curriculaResponse || []).map((c: any) => ({
+        id: c.id,
+        version: c.version || `Pensum ${c.id}`
+      }));
+
+      this.dataLoaded = true;
+    } catch (error) {
+      console.error('Failed to load initial modal data', error);
+      alert('No pudimos cargar la información inicial. Intenta de nuevo.');
+    } finally {
+      this.loadingInitialData = false;
+    }
+  }
+
+  private async loadProgramsBySchool(schoolId: number): Promise<void> {
+    if (!schoolId) {
+      return;
+    }
+
+    this.loadingPrograms = true;
+    try {
+      const list = await firstValueFrom(this.programsService.getBySchoolId(schoolId));
+      this.programs = (list || []).map((p: any) => ({
+        id: p.id,
+        name: p.name || p.title || `Program ${p.id}`
+      }));
+    } catch (err: any) {
+      console.error('Failed to load programs for school', schoolId, err);
+      if (err?.status === 401) {
+        alert('Error de autenticación. Por favor, recarga la página e intenta de nuevo.');
+      } else {
+        alert(`Error al cargar los programas: ${err?.message || 'Error desconocido'}`);
+      }
+    } finally {
+      this.loadingPrograms = false;
+    }
+  }
 }

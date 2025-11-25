@@ -26,26 +26,25 @@ export const API_URLS = {
 
   STUDENT_COURSES: {
     CREATE: '/student-courses',
+    SYNC: '/student-courses/approve-or-unapprove',
     GET_ALL: '/student-courses',
-    GET_BY_STUDENT: (studentCurriculumId: string | number) =>
-      `/student-courses/student-curriculum/${studentCurriculumId}`,
-    GET_ONE: (
-      studentCurriculumId: string | number,
-      courseInCurriculumId: string | number
-    ) => `/student-courses/${studentCurriculumId}/${courseInCurriculumId}`,
-    UPDATE: (
-      studentCurriculumId: string | number,
-      courseInCurriculumId: string | number
-    ) => `/student-courses/${studentCurriculumId}/${courseInCurriculumId}`,
-    DELETE: (
-      studentCurriculumId: string | number,
-      courseInCurriculumId: string | number
-    ) => `/student-courses/${studentCurriculumId}/${courseInCurriculumId}`,
+    GET_MY_BY_STUDENT: (id: number) => `/student-courses/me/student-curricula/${id}`,
+    GET_BY_STUDENT: (id: number) => `/student-courses/student-curriculum/${id}`,
+    GET_ONE: (sId: number, cId: number) => `/student-courses/${sId}/${cId}`,
+    UPDATE: (sId: number, cId: number) => `/student-courses/${sId}/${cId}`,
+    DELETE: (sId: number, cId: number) => `/student-courses/${sId}/${cId}`,
   },
+  
 
   STUDENT_CURRICULA: {
+    CREATE: '/student-curricula',
+    CREATE_BY_ME: '/student-curricula/me',
     GET_ALL: '/student-curricula',
-    GET_ONE: (id: string | number) => `/student-curricula/${id}`,
+    GET_BY_ME: '/student-curricula/me',
+    GET_ONE: (id: number) => `/student-curricula/${id}`,
+    GET_ONE_BY_ME: (id: number) => `/student-curricula/me/${id}`,
+    UPDATE: (id: number) => `/student-curricula/${id}`,
+    DELETE: (id: number) => `/student-curricula/${id}`,
   },
 
   COURSES_IN_CURRICULUM: {
@@ -73,6 +72,7 @@ export const API_URLS = {
     CURRICULA: {
     GET_ALL: '/curricula',
     GET_ONE: (id: string | number) => `/curricula/${id}`,
+    FIND_BY_PROGRAM: (programId: string | number) => `/curricula/program/${programId}`,
     CREATE: '/curricula',
     UPDATE: (id: string | number) => `/curricula/${id}`,
     DELETE: (id: string | number) => `/curricula/${id}`,

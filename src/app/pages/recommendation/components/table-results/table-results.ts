@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-//import { RecommendationService } from '../../services/recommendation.service';
+import { RecommendationService } from '../../../../core/services/recommendation.service';
+ 
 
 interface Column {
     field: string;
@@ -28,7 +29,7 @@ interface Materia {
   template: `
     <div class="container-table-results">
         <h1>tabladescomentar</h1>
-      <!-- <p-table 
+    <p-table 
         [columns]="cols" 
         [value]="materias" 
         [tableStyle]="{ 'min-width': '50rem' }">
@@ -50,45 +51,45 @@ interface Materia {
             </tr>
         </ng-template>
 
-      </p-table> -->
+      </p-table> 
     </div>
   `
 }) //implements OnInit
-export class TableResults   {
-    //   materias: Materia[] = [];
-    // cols: Column[] = [];
+export class TableResults implements OnInit  {
+      materias: Materia[] = [];
+    cols: Column[] = [];
 
-    // constructor(private recomendationsService: RecommendationService) {}
+    constructor(private recomendationsService: RecommendationService) {}
 
-    // ngOnInit() {
+    ngOnInit() {
 
-    //     // ============================
-    //     // 📌 DEFINIR COLUMNAS
-    //     // ============================
-    //     this.cols = [
-    //         { field: 'code', header: 'Código' },
-    //         { field: 'name', header: 'Nombre de la Materia' },
-    //         { field: 'credits', header: 'Créditos' },
-    //         { field: 'semester', header: 'Semestre' },
-    //         { field: 'calendar', header: 'Calendario' }
-    //     ];
+        // ============================
+        // 📌 DEFINIR COLUMNAS
+        // ============================
+        this.cols = [
+     
+            { field: 'name', header: 'Nombre de la Materia' },
+            { field: 'credits', header: 'Créditos' },
+            { field: 'semester', header: 'Semestre' },
+            { field: 'calendar', header: 'Calendario' }
+        ];
 
-    //     // ============================
-    //     // 📌 CONSUMIR API
-    //     // ============================
-    //     this.loadRecomendations(1); 
-    // }
+        // ============================
+        // 📌 CONSUMIR API
+        // ============================
+        this.loadRecomendations(1); 
+    }
 
-    // loadRecomendations(studentCurriculumId: number) {
-    //     this.recomendationsService.getRecomendations(studentCurriculumId)
-    //         .subscribe({
-    //             next: (response) => {
-    //                 // El endpoint te entrega: { courses: [...] }
-    //                 this.materias = response.courses;
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error loading recomendations', err);
-    //             }
-    //         });
-    // }
+    loadRecomendations(studentCurriculumId: number) {
+        this.recomendationsService.getRecomendations(studentCurriculumId)
+            .subscribe({
+                next: (response) => {
+                    // El endpoint te entrega: { courses: [...] }
+                    this.materias = response.courses;
+                },
+                error: (err) => {
+                    console.error('Error loading recomendations', err);
+                }
+            });
+    }
 }

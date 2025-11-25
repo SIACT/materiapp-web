@@ -107,7 +107,7 @@ export class Usercredits implements OnInit {
   }
 
   private loadStudentCoursesFallback() {
-    this.studentCoursesService.findByStudentCurriculum(this.studentCurriculumId).subscribe({
+    this.studentCoursesService.findByStudentCurriculumId(this.studentCurriculumId).subscribe({
       next: (list) => {
         if (Array.isArray(list)) {
           this.totalCourses = list.length;

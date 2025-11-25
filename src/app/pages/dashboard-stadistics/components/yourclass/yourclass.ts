@@ -107,7 +107,7 @@ export class Yourclass implements OnInit {
     const studentCurriculumId = 1; 
 
     this.studentCoursesService
-      .findByStudentCurriculum(studentCurriculumId)
+      .findByStudentCurriculumId(studentCurriculumId)
       .pipe(
         switchMap((studentCourses: any[]) => {
           

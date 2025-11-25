@@ -29,6 +29,7 @@ export interface StudentCurriculum {
   isActive: boolean;
   studentId: string;
   student: Student;
+  semester?: number;
   curriculumId: number;
   curriculum: Curriculum;
   studentCourses: StudentCourse[];
