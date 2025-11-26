@@ -5,6 +5,7 @@ import { ProfileSelectionService } from '../../../../core/services/profile-selec
 import { StudentCourse } from '../../../../core/dto/student-course.type';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { GlobalStatsService } from '../../../../core/services/global-stats.service';
 
 interface SemesterGroup {
   semester: number;
@@ -37,6 +38,94 @@ interface GlobalStats {
       <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Mis Materias</h1>
         <p class="text-gray-600">Gestiona el estado de tus materias por semestre</p>
+      </div>
+
+      <!-- Barra de Progreso General de la Carrera -->
+      <div class="mb-6 bg-white rounded-xl shadow-lg p-6 border-l-4 border-indigo-500">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="bg-indigo-100 p-3 rounded-full">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">Progreso de la Carrera</h2>
+              <p class="text-sm text-gray-600">Tu avance académico general</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-4xl font-bold text-indigo-600">{{ globalStats.completionPercentage }}%</p>
+            <p class="text-xs text-gray-500 mt-1">Completado</p>
+          </div>
+        </div>
+
+        <!-- Barra de progreso principal -->
+        <div class="relative mb-4">
+          <div class="bg-gray-200 rounded-full h-8 overflow-hidden shadow-inner">
+            <div 
+              class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-3"
+              [style.width.%]="globalStats.completionPercentage">
+              <span 
+                *ngIf="globalStats.completionPercentage > 10"
+                class="text-white font-bold text-sm drop-shadow-lg">
+                {{ globalStats.completionPercentage }}%
+              </span>
+            </div>
+          </div>
+          <!-- Indicadores de progreso -->
+          <div class="flex justify-between mt-2 text-xs text-gray-600">
+            <span class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              {{ globalStats.completedCourses }} de {{ globalStats.totalCourses }} materias
+            </span>
+            <span class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              {{ globalStats.completedCredits }} de {{ globalStats.totalCredits }} créditos
+            </span>
+          </div>
+        </div>
+
+        <!-- Mensajes motivacionales -->
+        <div class="flex items-center gap-2 p-3 rounded-lg"
+             [ngClass]="{
+               'bg-green-50 border border-green-200': globalStats.completionPercentage === 100,
+               'bg-blue-50 border border-blue-200': globalStats.completionPercentage >= 75 && globalStats.completionPercentage < 100,
+               'bg-purple-50 border border-purple-200': globalStats.completionPercentage >= 50 && globalStats.completionPercentage < 75,
+               'bg-amber-50 border border-amber-200': globalStats.completionPercentage >= 25 && globalStats.completionPercentage < 50,
+               'bg-gray-50 border border-gray-200': globalStats.completionPercentage < 25
+             }">
+          <svg class="w-5 h-5 flex-shrink-0"
+               [ngClass]="{
+                 'text-green-600': globalStats.completionPercentage === 100,
+                 'text-blue-600': globalStats.completionPercentage >= 75 && globalStats.completionPercentage < 100,
+                 'text-purple-600': globalStats.completionPercentage >= 50 && globalStats.completionPercentage < 75,
+                 'text-amber-600': globalStats.completionPercentage >= 25 && globalStats.completionPercentage < 50,
+                 'text-gray-600': globalStats.completionPercentage < 25
+               }"
+               fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <p class="text-sm font-medium"
+             [ngClass]="{
+               'text-green-800': globalStats.completionPercentage === 100,
+               'text-blue-800': globalStats.completionPercentage >= 75 && globalStats.completionPercentage < 100,
+               'text-purple-800': globalStats.completionPercentage >= 50 && globalStats.completionPercentage < 75,
+               'text-amber-800': globalStats.completionPercentage >= 25 && globalStats.completionPercentage < 50,
+               'text-gray-800': globalStats.completionPercentage < 25
+             }">
+            <span *ngIf="globalStats.completionPercentage === 100">🎉 ¡Felicitaciones! Has completado todas las materias de tu carrera.</span>
+            <span *ngIf="globalStats.completionPercentage >= 75 && globalStats.completionPercentage < 100">🚀 ¡Excelente! Estás muy cerca de completar tu carrera. Solo te faltan {{ globalStats.remainingCourses }} materias.</span>
+            <span *ngIf="globalStats.completionPercentage >= 50 && globalStats.completionPercentage < 75">💪 ¡Vas por buen camino! Ya completaste más de la mitad de tu carrera.</span>
+            <span *ngIf="globalStats.completionPercentage >= 25 && globalStats.completionPercentage < 50">📚 Sigue adelante, has avanzado un {{ globalStats.completionPercentage }}% de tu carrera.</span>
+            <span *ngIf="globalStats.completionPercentage < 25 && globalStats.completionPercentage > 0">🌟 Estás comenzando tu camino. ¡Cada materia aprobada es un logro!</span>
+            <span *ngIf="globalStats.completionPercentage === 0">🎯 Marca tus primeras materias aprobadas para comenzar a ver tu progreso.</span>
+          </p>
+        </div>
       </div>
 
       <!-- Panel de Estadísticas Globales -->
@@ -222,6 +311,7 @@ interface GlobalStats {
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                           </svg>
                           {{ course.credits }} créditos
+                          {{ course.isApproved}} llave
                         </span>
                         <span class="flex items-center gap-1">
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,7 +404,8 @@ export class Semester implements OnInit {
 
   constructor(
     private studentCourses: StudentCoursesService,
-    private profile: ProfileSelectionService
+    private profile: ProfileSelectionService,
+    private globalStatsService: GlobalStatsService // NUEVO: Inyectar el servicio
   ) { }
 
   ngOnInit(): void {
@@ -377,8 +468,7 @@ export class Semester implements OnInit {
       })
       .sort((a, b) => a.semester - b.semester);
   }
-
-  // NUEVA FUNCIÓN: Calcula las estadísticas globales
+ 
   private calculateGlobalStats(): void {
     // Calcular totales
     this.globalStats.totalCourses = this.courses.length;
@@ -402,6 +492,8 @@ export class Semester implements OnInit {
     this.globalStats.creditsPercentage = this.globalStats.totalCredits > 0
       ? Math.round((this.globalStats.completedCredits / this.globalStats.totalCredits) * 100)
       : 0;
+ 
+    this.globalStatsService.updateStats(this.globalStats);
   }
 
   toggleSemester(group: SemesterGroup): void {
@@ -426,7 +518,7 @@ export class Semester implements OnInit {
       console.error('No hay studentCurriculumId');
       course.isApproved = !course.isApproved;
       this.updateGroupStats();
-      this.calculateGlobalStats(); // Actualizar estadísticas globales
+      this.calculateGlobalStats();
       return;
     }
 
@@ -440,13 +532,13 @@ export class Semester implements OnInit {
       next: () => {
         console.log(`Materia ${course.isApproved ? 'aprobada' : 'desaprobada'} correctamente`);
         this.updateGroupStats();
-        this.calculateGlobalStats(); // Actualizar estadísticas globales
+        this.calculateGlobalStats();
       },
       error: (error) => {
         console.error('Error al actualizar materia:', error);
         course.isApproved = previousState;
         this.updateGroupStats();
-        this.calculateGlobalStats(); // Actualizar estadísticas globales
+        this.calculateGlobalStats();
       }
     });
   }
@@ -467,7 +559,7 @@ export class Semester implements OnInit {
     });
     group.allSelected = newState;
     this.updateGroupStats();
-    this.calculateGlobalStats(); // Actualizar estadísticas globales
+    this.calculateGlobalStats();
 
     const updateRequests = group.courses.map(course => 
       this.studentCourses.approveUnApprove({
@@ -487,7 +579,7 @@ export class Semester implements OnInit {
           course.isApproved = previousStates[index];
         });
         this.updateGroupStats();
-        this.calculateGlobalStats(); // Actualizar estadísticas globales
+        this.calculateGlobalStats();
       }
     });
   }

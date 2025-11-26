@@ -72,13 +72,13 @@ import { CardModule } from 'primeng/card';
       <div class="grid md:grid-cols-2 gap-8 mb-32 z-[5]">
 
         <p-card styleClass="shadow-lg text-center rounded-2xl bg-white/90 backdrop-blur">
-          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png" shape="circle" size="xlarge"></p-avatar>
+          <p-avatar image="https://avatars.githubusercontent.com/u/92270218?v=4" shape="circle" size="xlarge"></p-avatar>
           <h3 class="text-xl font-medium mt-4">Yorth Ortegón Sánchez</h3>
           <p class="opacity-70">Software Developer</p>
         </p-card>
 
         <p-card styleClass="shadow-lg text-center rounded-2xl bg-white/90 backdrop-blur">
-          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" size="xlarge"></p-avatar>
+          <p-avatar image="https://avatars.githubusercontent.com/u/177427924?v=4" shape="circle" size="xlarge"></p-avatar>
           <h3 class="text-xl font-medium mt-4">Christian Salazar Botina</h3>
           <p class="opacity-70">Software Developer</p>
         </p-card>
