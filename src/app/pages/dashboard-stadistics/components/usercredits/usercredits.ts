@@ -5,6 +5,8 @@ import { DividerModule } from 'primeng/divider';
  
 import { StudentCoursesService } from '../../../../core/services/student-course.service';
 import { StudentCurriculaService } from '../../../../core/services/student-curricula.service';
+import { ProfileSelectionService } from '../../../../core/services/profile-selection.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-usercredits',
@@ -71,43 +73,43 @@ export class Usercredits implements OnInit {
   totalCourses = 0;
   curriculumVersion = 'N/A';
 
-  // NOTE: in production this should come from an auth/profile state
-  // For now default to 1 so the UI shows something meaningful — can be replaced
-  // with a dynamic input later (e.g., @Input() studentCurriculumId)
-  private studentCurriculumId = 1;
+  private profileSub?: Subscription;
 
   constructor(
     private studentCoursesService: StudentCoursesService,
-    private studentCurriculaService: StudentCurriculaService
+    private studentCurriculaService: StudentCurriculaService,
+    private profileSelection: ProfileSelectionService
   ) {}
 
    
   ngOnInit(): void {
-    // Load the student-curriculum and derive values used by the template.
-    this.studentCurriculaService.getOne(this.studentCurriculumId).subscribe({
-      next: (sc) => {
-        if (sc) {
-          this.curriculumVersion = sc.curriculum?.version ?? 'N/A';
-          this.userName = sc.student?.names ?? this.userName;
-          this.userEmail = sc.student?.email ?? this.userEmail;
-          // prefer server-provided studentCourses array when available
-          this.totalCourses = (sc.studentCourses || []).length;
-        }
-      },
-      error: (err) => {
-        console.warn('Failed to load student curriculum', err);
-        // fallback: query student-courses endpoint directly
-        this.loadStudentCoursesFallback();
-      }
-    });
+    // Subscribe to profileSelection to react to the studentCurriculumId
+    this.profileSub = this.profileSelection.state$.subscribe(state => {
+      const id = state?.studentCurriculumId;
+      if (!id) return;
 
-    // Ensure totalCourses is synced with student-courses endpoint in case
-    // the studentCurriculum record does not include the studentCourses array.
-    this.loadStudentCoursesFallback();
+      this.studentCurriculaService.getOne(id).subscribe({
+        next: (sc) => {
+          if (sc) {
+            this.curriculumVersion = sc.curriculum?.version ?? 'N/A';
+            this.userName = sc.student?.names ?? this.userName;
+            this.userEmail = sc.student?.email ?? this.userEmail;
+            this.totalCourses = (sc.studentCourses || []).length;
+          }
+        },
+        error: (err) => {
+          console.warn('Failed to load student curriculum', err);
+          // fallback to counting courses
+          this.loadStudentCoursesFallback(id);
+        }
+      });
+
+      this.loadStudentCoursesFallback(id);
+    });
   }
 
-  private loadStudentCoursesFallback() {
-    this.studentCoursesService.findByStudentCurriculumId(this.studentCurriculumId).subscribe({
+  private loadStudentCoursesFallback(id: number) {
+    this.studentCoursesService.findByStudentCurriculumId(id).subscribe({
       next: (list) => {
         if (Array.isArray(list)) {
           this.totalCourses = list.length;
@@ -117,5 +119,9 @@ export class Usercredits implements OnInit {
         console.warn('Failed to load student courses', err);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
   }
 }

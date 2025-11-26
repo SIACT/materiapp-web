@@ -36,7 +36,7 @@
   /* Colores de Texto */
   --text-primary: #111827;
   --text-secondary: #6b7280;
-  --text-tertiary: #198a2c;
+  --text-tertiary: #69c378;
   --text-inverse: #ffffff;
 
   /* Sombras */
@@ -129,6 +129,78 @@
   border-radius: 0.5rem;
 }
 
+.semester-header-clickable[aria-expanded="true"] {
+  background: linear-gradient(180deg, #f3f3f3, #ffffff);
+  box-shadow: 0 6px 18px rgba(12,10,15,0.06);
+  border-color: rgba(99,102,241,0.12);
+}
+
+.course-card-square {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.course-card-square:hover {
+  transform: translateY(-4px);
+}
+
+
+/* Selected course visual (light green) */
+.course-card-square.course-selected {
+  background: linear-gradient(180deg, #f3fff6, #f8fff9) !important;
+  border: 1px solid rgba(16,185,129,0.15) !important;
+  box-shadow: 0 8px 30px rgba(16,185,129,0.06) !important;
+}
+
+.course-card-square.course-selected .course-title {
+  color: #15803d; /* green-700-ish */
+}
+
+ 
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 4px;
+  border: 1px solid rgba(15,23,42,0.15);
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+}
+
+input[type="checkbox"]::after {
+  content: '';
+  display: block;
+  width: 0.35rem;
+  height: 0.6rem;
+  border: solid transparent;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.12s ease-in-out, border-color 0.12s ease-in-out;
+  position: absolute;
+  left: 0.28rem;
+  top: 0.18rem;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #dcfce7; 
+  border-color: #10b981;  
+}
+
+input[type="checkbox"]:checked::after {
+  transform: rotate(45deg) scale(1);
+  border-color: #065f46; 
+}
+
+ 
+.select-all-btn {
+  border: 1px solid rgba(16,185,129,0.08);
+  background: rgba(16,185,129,0.06);
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+}
+
+.select-all-btn:hover { opacity: 0.95 }
 .semester-panel-floating .p-panel-header .pi {
   color: var(--color-gray-600);
   font-size: 0.875rem;
@@ -294,7 +366,7 @@
   background-color: var(--color-info);
 }
 
-/* Fondo Base */
+ 
 .bg-base {
   background-color: var(--bg-primary);
 }
@@ -307,13 +379,22 @@
   background-color: var(--bg-tertiary);
 }
 
-/* Texto con Variables */
+ 
 .text-base-primary {
   color: var(--text-primary);
 }
 
 .text-base-secondary {
   color: var(--text-secondary);
+}
+.text-subtitle {
+  color: var(--color-gray-400);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.bg-hover{
+  background-color: var(--color-success);
 }
 
 .text-base-tertiary {
@@ -324,7 +405,7 @@
   color: var(--text-inverse);
 }
 
-/* Sombras Personalizadas */
+ 
 .shadow-custom-sm {
   box-shadow: var(--shadow-sm);
 }
@@ -426,7 +507,7 @@
   color: #5b5bd7;
 }
 
-/* Styles for PrimeNG hello card */
+ 
 .hello-card {
   padding: 1rem !important;
   border-radius: 12px !important;
@@ -502,18 +583,16 @@
   background: #eef2ff;
 }
 
-/* Card */
+ 
 .course-card {
   background:#e5fbe7;
   border-radius: 20px;
-  padding: 1rem;
   display: flex;
-  gap: 2rem;
   align-items: center;
   box-shadow: 0 5px 25px rgba(0,0,0,0.08);
   transition: .2s;
-  margin-top: 2px;
-  margin-bottom: 6px;
+ 
+ 
 }
 
 .course-card:hover {
@@ -556,8 +635,7 @@
   flex-wrap: wrap;
   
 }
-
-/* New styles for p-card layout */
+ 
 .courses-grid {
   display: grid;
   gap: 0.8rem;

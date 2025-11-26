@@ -64,6 +64,21 @@ interface SelectOption {
           (onChange)="onCalendarChange($event.value)"
         />
       </div>
+      <div class="flex p-3 gap-4 items-center">
+        <label for="select-calendar" class="text-xs font-semibold text-gray-700 mb-1">Pensum</label>
+        <p-select
+          id="select-calendar"
+          [options]="selectOptions"
+          [(ngModel)]="selectedOption"
+          [checkmark]="true"
+          optionLabel="label"
+          [showClear]="true"
+          size="small"
+          placeholder="All"
+          class="shearch-select"
+          (onChange)="onCalendarChange($event.value)"
+        />
+      </div>
       <div class="flex items-center gap-2">
         <p-toggleswitch [(ngModel)]="checked"  (onChange)="onToggleRemaining($event.checked)"/>
         <label class="text-sm whitespace-nowrap text-black">Show only remaining</label>

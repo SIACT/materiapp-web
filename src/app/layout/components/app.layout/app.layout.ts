@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, PanelMenuModule, AppHeader, AppSidebar],
   template: `
-   <div class="layout-shell flex  container-primary min-h-screen relative mt-4 ">
-      <!-- Desktop Sidebar -->
+   <div class="layout-shell flex   container-primary min-h-screen relative mt-4 ">
+   
       <nav 
         *ngIf="isDesktop && sidebarVisible" 
         class="layout-sidebar w-[clamp(15rem,18vw,19rem)] fixed  left-0 top-0 min-h-screen max-h-screen   border-primary-dark/10 container-sidebar text-inverse z-[1100]">
@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs';
         </div>
       </nav>
 
-      <!-- Collapsed icon bar when sidebar is hidden (desktop) -->
+    
       <div *ngIf="isDesktop && !sidebarVisible" class="fixed left-0 top-0 h-screen z-[1150] flex flex-col items-center justify-center gap-2 w-12 container-sidebar text-inverse ">
         <div class="w-full flex flex-col  text-green-600 pr-10">
           
@@ -37,7 +37,7 @@ import { Subscription } from 'rxjs';
         </div>
       </div>
 
-      <!-- Mobile Sidebar Ove -->
+    
       <div *ngIf="!isDesktop && sidebarVisible" class="fixed inset-0 z-[1200] lg:hidden">
         <div class="absolute inset-0 bg-black/50" (click)="closeSidebar()"></div>
         <div class="relative h-full w-[min(80vw,18rem)] bg-primary text-base-primary shadow-xl">
@@ -56,12 +56,11 @@ import { Subscription } from 'rxjs';
       <div 
         class="layout-main flex flex-col flex-1 min-h-screen  container-main   transition-all duration-300 first-line:"
         [style.marginLeft]="desktopMargin">
-        <!-- Header -->
+      
         <div class="container-header flex-shrink-0">
           <app-header></app-header>
         </div>
-
-        <!-- Main Content - Con scroll -->
+ 
         <main class="flex-1 bg-secondary overflow-y-auto  ">
           <div class="p-4 lg:p-8 text-base-primary h-full min-h-[calc(100vh-5rem)] ">
             <router-outlet />

@@ -8,6 +8,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { Subjectprox } from "../subjectprox/subjectprox";
 import { StudentCoursesService } from '../../../../core/services/student-course.service';
+import { ProfileSelectionService } from '../../../../core/services/profile-selection.service';
+import { Subscription } from 'rxjs';
 import { CoursesInCurriculumService } from '../../../../core/services/courses-in-curriculum.service';
 import { forkJoin, of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
@@ -91,20 +93,35 @@ export class Yourclass implements OnInit {
 
   courses: any[] = []; // Loaded dynamically from API
 
+  private profileSub?: Subscription;
+
   constructor(
     private studentCoursesService: StudentCoursesService,
-    private coursesInCurriculumService: CoursesInCurriculumService
+    private coursesInCurriculumService: CoursesInCurriculumService,
+    private profileSelection: ProfileSelectionService
   ) {}
 
   ngOnInit(): void {
-    this.loadCourses();
+    // listen for studentCurriculumId from profile selection
+    this.profileSub = this.profileSelection.state$.subscribe(state => {
+      const id = state?.studentCurriculumId;
+      if (!id) {
+        // clear current data if none
+        this.courses = [];
+        return;
+      }
+
+      this.loadCoursesForStudentCurriculum(id);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
   }
 
  
-  loadCourses() {
+  private loadCoursesForStudentCurriculum(studentCurriculumId: number) {
     this.loading = true;
-
-    const studentCurriculumId = 1; 
 
     this.studentCoursesService
       .findByStudentCurriculumId(studentCurriculumId)

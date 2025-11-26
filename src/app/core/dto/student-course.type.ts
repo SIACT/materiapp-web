@@ -1,15 +1,11 @@
 export interface StudentCourse {
   id: number;
- 
-  studentCurriculumId: number;
+  name: string;
+  code: string;
+  semester: number;
+  calendar: string;
+  type: string;
+  credits: number;
+  isAproved: boolean;
   courseInCurriculumId: number;
- 
-  approved: boolean;          
-  approvedAt?: string | null;   
- 
-  createdAt: string;
-  updatedAt: string;
- 
-  createdBy?: number;
-  updatedBy?: number;
 }

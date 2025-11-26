@@ -50,6 +50,7 @@ export class StudentCoursesService {
       `${this.base}${API_URLS.STUDENT_COURSES.GET_BY_STUDENT(studentCurriculumId)}`
     );
   }
+
  
   findOne(studentCurriculumId: number, courseInCurriculumId: number): Observable<StudentCourse> {
     return this.http.get<StudentCourse>(

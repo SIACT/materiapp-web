@@ -193,14 +193,16 @@ export class Modal implements OnInit {
     }
 
     try {
-      await firstValueFrom(
+      const created = await firstValueFrom(
         this.studentCurricula.createByMe({
           semester: this.form.semester,
           curriculumId: this.form.curriculumId
         })
       );
 
-      this.profileSelection.setState({ ...this.form });
+      // store the newly created studentCurriculum id so other parts of the app
+      // (e.g., Semester component) can request the user's student-courses
+      this.profileSelection.setState({ ...this.form, studentCurriculumId: created?.id ?? null });
       this.visible = false;
     } catch (err) {
       console.error('Failed to create student record', err);

@@ -18,7 +18,7 @@ export class StudentCurriculaService {
       data
     );
   }
-
+ 
   createByMe(data: Partial<StudentCurriculum>): Observable<StudentCurriculum> {
     return this.http.post<StudentCurriculum>(
       `${this.base}${API_URLS.STUDENT_CURRICULA.CREATE_BY_ME}`,
@@ -31,26 +31,29 @@ export class StudentCurriculaService {
       `${this.base}${API_URLS.STUDENT_CURRICULA.GET_ALL}`
     );
   }
-
+ 
   getOne(id: number): Observable<StudentCurriculum> {
     return this.http.get<StudentCurriculum>(
       `${this.base}${API_URLS.STUDENT_CURRICULA.GET_ONE(id)}`
     );
   }
-
+ 
   findByMe(): Observable<StudentCurriculum[]> {
     return this.http.get<StudentCurriculum[]>(
       `${this.base}${API_URLS.STUDENT_CURRICULA.GET_BY_ME}`
     );
   }
-
+ 
   findOneByMe(id: number): Observable<StudentCurriculum> {
     return this.http.get<StudentCurriculum>(
       `${this.base}${API_URLS.STUDENT_CURRICULA.GET_ONE_BY_ME(id)}`
     );
   }
  
-  update(id: number, data: Partial<StudentCurriculum>): Observable<StudentCurriculum> {
+  update(
+    id: number,
+    data: Partial<StudentCurriculum>
+  ): Observable<StudentCurriculum> {
     return this.http.patch<StudentCurriculum>(
       `${this.base}${API_URLS.STUDENT_CURRICULA.UPDATE(id)}`,
       data

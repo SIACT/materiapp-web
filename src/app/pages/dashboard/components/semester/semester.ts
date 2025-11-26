@@ -25,14 +25,12 @@ interface Subject {
   standalone: true,
   imports: [PanelModule, CheckboxModule, CardModule, FormsModule, CommonModule, HttpClientModule, ButtonModule, Modal],
   template: `
-    <div class="grid grid-cols-2 gap-3">
-      <div class="col-span-1 container-options-pensum">
+    <div class="grid grid-cols-2 gap-3 ">
+      <div class="col-span-1 container-options-pensum ">
         <p-card 
-          class="profile-card cursor-pointer transition-shadow hover:shadow-lg"
+          class=" cursor-pointer transition-shadow hover:shadow-lg p-4 hover:bg-green-100 "
           (click)="openProfileModal()">
-          <ng-template pTemplate="header">
-            <div class="text-base font-semibold text-primary">Perfil académico</div>
-          </ng-template>
+            <div class="text-xl font-semibold text-primary pb-2">Perfil académico</div>
           <p class="text-sm text-gray-600 mb-4">
             Completa tus datos de facultad, programa, semestre y pensum para
             personalizar las materias sugeridas.
@@ -47,84 +45,7 @@ interface Subject {
         <h1>Agregar semestre</h1>
       </div>
     </div>
-    <div class="w-full flex flex-col gap-3">
- 
-    
-      <div class="flex items-center justify-between w-full py-3">
-        
-        
-      </div>
-      
-      <p-panel 
-        *ngFor="let semester of semesters" 
-        [toggleable]="true"
-        [collapsed]="!isExpanded[semester.value]"
-        (onAfterToggle)="onPanelAfterToggle(semester.value, $event)"
-        styleClass="semester-panel-floating ">
-        
-        <ng-template pTemplate="header">
-          <div 
-            class="flex items-center justify-between w-full pr-4 cursor-pointer semester-header-clickable"
-            (click)="toggleSemester(semester.value)">
-            <span class="font-semibold px-4">Semestre {{ semester.value }}</span>
-            <div class="flex items-center gap-1 ml-auto">
-              <span class="text-sm opacity-70">
-                {{ getSelectedCount(semester.value) }}/{{ subjectsBySemester[semester.value]?.length || 0 }} materias
-                <span class="px-2">•</span>
-                {{ getCreditsCount(semester.value) }}/{{ getTotalCredits(semester.value) }} créditos
-              </span>
-               
-            </div>
-           
-          </div>
-        </ng-template>
-        <div class="p-2 pt-4">
-          <div class="flex flex-col gap-3">
-            <div 
-              *ngFor="let subject of subjectsBySemester[semester.value] || []" 
-              class="subject-card-floating flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer border border-gray-100"
-              [class.bg-primary-light]="isSelected(semester.value, subject)"
-              [class.border-primary]="isSelected(semester.value, subject)"
-              (click)="toggleSubject(semester.value, subject)">
-              <p-checkbox 
-                [binary]="true"
-                [(ngModel)]="subjectCheckboxes[semester.value + '_' + subject.code]"
-                (onChange)="onCheckboxChange(semester.value, subject, $event.checked)"
-                (click)="$event.stopPropagation()">
-              </p-checkbox>
-              
-              <div class="flex-1 flex flex-col gap-1">
-                <div class="flex items-center gap-2">
-       
-                  <span class="text-sm font-semibold">{{ subject.name }}</span>
-                </div>
-                <span class="text-xs text-gray-500" *ngIf="subject.status">
-                  {{ subject.status }}
-                </span>
-              </div>
-              
-              <div class="flex items-center gap-3">
-                <div class="text-right">
-                  <div class="text-sm font-semibold">{{ subject.credits }}</div>
-                  <div class="text-xs text-gray-500">créditos</div>
-                </div>
-                <div 
-                  class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg"
-                  [ngClass]="{
-                    'bg-success text-white': subject.academicPeriod === 'A',
-                    'bg-info text-white': subject.academicPeriod === 'B',
-                    'bg-gray-300 text-gray-900': subject.academicPeriod !== 'A' && subject.academicPeriod !== 'B'
-                  }"
-                  *ngIf="subject.academicPeriod">
-                  {{ subject.academicPeriod }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </p-panel>
-    </div>
-
+     
     <app-modal></app-modal>
   `,
 })

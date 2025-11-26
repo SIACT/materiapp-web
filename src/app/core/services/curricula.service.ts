@@ -27,7 +27,6 @@ export class CurriculaService {
     );
   }
 
-
   create(data: Partial<Curriculum>): Observable<Curriculum> {
     return this.http.post<Curriculum>(`${this.base}${API_URLS.CURRICULA.CREATE}`, data);
   }

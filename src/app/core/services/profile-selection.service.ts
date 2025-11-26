@@ -6,6 +6,8 @@ export interface ProfileSelectionState {
   programId: number | null;
   semester: number | null;
   curriculumId: number | null;
+
+  studentCurriculumId?: number | null;
 }
 
 @Injectable({
@@ -17,6 +19,7 @@ export class ProfileSelectionService {
     programId: null,
     semester: null,
     curriculumId: null
+    , studentCurriculumId: null
   };
 
   private stateSubject = new BehaviorSubject<ProfileSelectionState>(this.initialState);
@@ -40,5 +43,8 @@ export class ProfileSelectionService {
   reset(): void {
     this.stateSubject.next(this.initialState);
   }
+
+  
+
 }
 
