@@ -21,7 +21,6 @@ import { Yourclass } from "./components/yourclass/yourclass";
     </div>
   
   ` 
- 
 })
 export class StadisticsLayout {
 

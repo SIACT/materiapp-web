@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
@@ -9,10 +9,13 @@ import { ButtonModule } from 'primeng/button';
 import { Subjectprox } from "../subjectprox/subjectprox";
 import { StudentCoursesService } from '../../../../core/services/student-course.service';
 import { ProfileSelectionService } from '../../../../core/services/profile-selection.service';
+ 
 import { Subscription } from 'rxjs';
 import { CoursesInCurriculumService } from '../../../../core/services/courses-in-curriculum.service';
 import { forkJoin, of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
+import { User } from '../../../../core/dto/user.type';
+import { StudentsService } from '../../../../core/services/student.service';
 
 @Component({
   selector: 'app-yourclass',
@@ -31,11 +34,20 @@ import { switchMap, map, catchError } from 'rxjs/operators';
     <p-card styleClass="hello-card">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="hello-title">Hola, {{ name() }} 👋</h1>
+          <h1 class="hello-title">Hola, {{ currentUser?.firstName }} {{ currentUser?.lastName }} 👋</h1>
           <p class="hello-description">
-            ¿Como estas? conoce el progreso de tu materia y creditos completados.
+            ¿Cómo estás? Conoce el progreso de tu materia y créditos completados.
           </p>
-          <p-tag [value]="major()" severity="info" class="hello-major-tag"></p-tag>
+          <div class="flex gap-2 mt-3">
+            <p-tag value="Ingeniero de Sistemas" severity="info"></p-tag>
+            <p-tag [value]="currentUser?.username || 'Usuario'" severity="secondary"></p-tag>
+          </div>
+          
+          <!-- Información adicional del usuario -->
+          <div class="mt-4 text-sm text-gray-600">
+            <p><i class="pi pi-envelope mr-2"></i>{{ currentUser?.email }}</p>
+            <p class="mt-1"><i class="pi pi-calendar mr-2"></i>Miembro desde: {{ formatDate(currentUser?.createdAt) }}</p>
+          </div>
         </div>
       </div>
     </p-card>
@@ -83,30 +95,31 @@ import { switchMap, map, catchError } from 'rxjs/operators';
 })
 export class Yourclass implements OnInit {
 
-  readonly name = input("Yorth");
-  readonly major = input("Ingeniero de Sistemas");
-
-  tabs = ["All", "prerraquisitos", "sinprerre", "creditos"];
+  tabs = ["All", "prerrequisitos", "sinprerre", "creditos"];
   activeTab = "All";
 
   loading = false;
+  currentUser: User | null = null;
 
-  courses: any[] = []; // Loaded dynamically from API
+  courses: any[] = [];
 
   private profileSub?: Subscription;
 
   constructor(
     private studentCoursesService: StudentCoursesService,
     private coursesInCurriculumService: CoursesInCurriculumService,
-    private profileSelection: ProfileSelectionService
+    private profileSelection: ProfileSelectionService,
+    private studentsService: StudentsService
   ) {}
 
   ngOnInit(): void {
-    // listen for studentCurriculumId from profile selection
+    // Cargar datos del usuario actual
+    this.loadCurrentUser();
+
+    // Listen for studentCurriculumId from profile selection
     this.profileSub = this.profileSelection.state$.subscribe(state => {
       const id = state?.studentCurriculumId;
       if (!id) {
-        // clear current data if none
         this.courses = [];
         return;
       }
@@ -119,7 +132,27 @@ export class Yourclass implements OnInit {
     this.profileSub?.unsubscribe();
   }
 
- 
+  private loadCurrentUser(): void {
+    this.studentsService.getMe().subscribe({
+      next: (users) => {
+        this.currentUser = Array.isArray(users) ? users[0]:users;
+      },
+      error: (err) => {
+        console.error('Error loading user data', err);
+      }
+    });
+  }
+
+  formatDate(dateString?: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+
   private loadCoursesForStudentCurriculum(studentCurriculumId: number) {
     this.loading = true;
 
@@ -127,14 +160,12 @@ export class Yourclass implements OnInit {
       .findByStudentCurriculumId(studentCurriculumId)
       .pipe(
         switchMap((studentCourses: any[]) => {
-          
           const ids = Array.from(new Set(studentCourses.map((s: any) => s.courseInCurriculumId)));
 
           if (!ids.length) {
             return of([]);
           }
 
-        
           const requests = ids.map((id) => this.coursesInCurriculumService.getOne(id).pipe(
             catchError(() => of(null))
           ));
@@ -146,7 +177,6 @@ export class Yourclass implements OnInit {
       )
       .subscribe({
         next: (coursesDetails: any[]) => {
-          // Map backend course model to our UI model
           this.courses = coursesDetails.map((c: any) => ({
             courseInCurriculumId: c.id,
             courseName: c.name,

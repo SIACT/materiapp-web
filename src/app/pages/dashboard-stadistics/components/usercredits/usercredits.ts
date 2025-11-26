@@ -2,16 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { CommonModule } from '@angular/common';
  
 import { StudentCoursesService } from '../../../../core/services/student-course.service';
 import { StudentCurriculaService } from '../../../../core/services/student-curricula.service';
 import { ProfileSelectionService } from '../../../../core/services/profile-selection.service';
+ 
 import { Subscription } from 'rxjs';
+import { User } from '../../../../core/dto/user.type';
+import { StudentsService } from '../../../../core/services/student.service';
 
 @Component({
   selector: 'app-usercredits',
   standalone: true,
-  imports: [AvatarModule, CardModule, DividerModule],
+  imports: [AvatarModule, CardModule, DividerModule, CommonModule],
   template: `
     <div class="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-lg overflow-hidden">
 
@@ -25,8 +29,10 @@ import { Subscription } from 'rxjs';
       <div class="flex justify-center -mt-10">
         <p-avatar 
           [image]="imageProfile"
+          [label]="getInitials()"
           shape="circle"
           size="xlarge"
+          [style]="{'background-color': '#9333ea', 'color': '#ffffff'}"
           class="border-4 border-white shadow-md">
         </p-avatar>
       </div>
@@ -35,6 +41,7 @@ import { Subscription } from 'rxjs';
       <div class="text-center mt-3 mb-6">
         <h3 class="text-xl font-semibold text-black">{{ userName }}</h3>
         <p class="text-gray-500 text-sm">{{ userEmail }}</p>
+        <p class="text-gray-400 text-xs mt-1">&#64;{{ username }}</p>
       </div>
 
       <!-- Stats Section -->
@@ -60,29 +67,33 @@ import { Subscription } from 'rxjs';
 })
 export class Usercredits implements OnInit {
  
-
   // Default images
   imageUrl =
     'https://img.freepik.com/foto-gratis/vista-superior-surtido-suministros-oficina-espacio-copia_23-2148543746.jpg?semt=ais_hybrid&w=740&q=80';
 
-  imageProfile = 'https://avatars.githubusercontent.com/u/92270218?v=4';
+  imageProfile = '';
 
-  // Values bound to the template
+  
   userName = 'Guest User';
   userEmail = 'guest@example.com';
+  username = 'guest';
   totalCourses = 0;
   curriculumVersion = 'N/A';
 
+  private currentUser: User | null = null;
   private profileSub?: Subscription;
 
   constructor(
     private studentCoursesService: StudentCoursesService,
     private studentCurriculaService: StudentCurriculaService,
-    private profileSelection: ProfileSelectionService
+    private profileSelection: ProfileSelectionService,
+    private studentsService: StudentsService
   ) {}
 
-   
   ngOnInit(): void {
+    // Cargar datos del usuario actual primero
+    this.loadCurrentUser();
+
     // Subscribe to profileSelection to react to the studentCurriculumId
     this.profileSub = this.profileSelection.state$.subscribe(state => {
       const id = state?.studentCurriculumId;
@@ -92,20 +103,52 @@ export class Usercredits implements OnInit {
         next: (sc) => {
           if (sc) {
             this.curriculumVersion = sc.curriculum?.version ?? 'N/A';
-            this.userName = sc.student?.names ?? this.userName;
-            this.userEmail = sc.student?.email ?? this.userEmail;
+            // Solo actualizar si no tenemos datos del usuario desde getMe()
+            if (!this.currentUser) {
+              this.userName = sc.student?.names ?? this.userName;
+              this.userEmail = sc.student?.email ?? this.userEmail;
+            }
             this.totalCourses = (sc.studentCourses || []).length;
           }
         },
         error: (err) => {
           console.warn('Failed to load student curriculum', err);
-          // fallback to counting courses
           this.loadStudentCoursesFallback(id);
         }
       });
 
       this.loadStudentCoursesFallback(id);
     });
+  }
+
+  private loadCurrentUser(): void {
+    this.studentsService.getMe().subscribe({
+      next: (users) => {
+        // Manejar el array que retorna el servicio
+        const user = Array.isArray(users) ? users[0] : users;
+        if (user) {
+          this.currentUser = user;
+          this.userName = `${user.firstName} ${user.lastName}`;
+          this.userEmail = user.email;
+          this.username = user.username;
+          // Puedes usar una API de avatares con el email o username
+          // Por ejemplo: https://ui-avatars.com/api/?name=First+Last
+          this.imageProfile = `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=9333ea&color=fff&size=128`;
+        }
+      },
+      error: (err) => {
+        console.error('Error loading user data', err);
+      }
+    });
+  }
+
+  getInitials(): string {
+    if (this.currentUser) {
+      const first = this.currentUser.firstName?.charAt(0) || '';
+      const last = this.currentUser.lastName?.charAt(0) || '';
+      return `${first}${last}`.toUpperCase();
+    }
+    return 'GU';
   }
 
   private loadStudentCoursesFallback(id: number) {

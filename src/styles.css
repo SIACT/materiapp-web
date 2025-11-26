@@ -278,11 +278,16 @@ input[type="checkbox"]:checked::after {
   border-bottom: 1px solid var(--color-primary);
  
 }
+.container-header-table {
+  background-color: var(--color-primary);
+   border-top-right-radius: var(--radius-lg);
+  border-top-left-radius: var(--radius-lg);
+}
 
 .container-secondary {
   background-color: var(--color-primary);
   border-radius: var(--radius-md);
-  padding: var(--spacing-md);
+ 
 }
 .container-shearch {
   background-color: var(--color-primary);

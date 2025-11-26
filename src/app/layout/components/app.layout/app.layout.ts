@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, PanelMenuModule, AppHeader, AppSidebar],
   template: `
-   <div class="layout-shell flex   container-primary min-h-screen relative mt-4 ">
+   <div class="layout-shell flex  container-primary min-h-screen relative mt-4 ">
    
       <nav 
         *ngIf="isDesktop && sidebarVisible" 

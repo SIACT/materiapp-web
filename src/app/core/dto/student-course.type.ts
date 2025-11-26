@@ -6,6 +6,6 @@ export interface StudentCourse {
   calendar: string;
   type: string;
   credits: number;
-  isAproved: boolean;
+  isApproved: boolean;
   courseInCurriculumId: number;
 }

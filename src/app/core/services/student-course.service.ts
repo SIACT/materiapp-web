@@ -25,7 +25,7 @@ export class StudentCoursesService {
   approveUnApprove(data: {
     studentCurriculumId: number;
     courseInCurriculumId: number;
-    approve: boolean;
+    isApproved: boolean;
   }): Observable<any> {
     return this.http.post(
       `${this.base}${API_URLS.STUDENT_COURSES.APPROVE_UNAPPROVE}`,

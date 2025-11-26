@@ -6,13 +6,11 @@ export const API_URLS = {
     REGISTER: '/auth/register',
   },
 
-  STUDENTS: {
-    GET_ALL: '/students',
-    GET_ONE: (id: string | number) => `/students/${id}`,
-    CREATE: '/students',
-    UPDATE: (id: string | number) => `/students/${id}`,
-    DELETE: (id: string | number) => `/students/${id}`,
+  USER:{
+    ME:'/users/me'
   },
+
+  
 
   SEMESTER: {
     GET_COURSES_IN_CURRICULUM: (curriculumId: string | number) =>
