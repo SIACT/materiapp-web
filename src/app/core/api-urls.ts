@@ -26,7 +26,7 @@ export const API_URLS = {
 
   STUDENT_COURSES: {
     CREATE: '/student-courses',
-    SYNC: '/student-courses/approve-or-unapprove',
+    APPROVE_UNAPPROVE: '/student-courses/approve-or-unapprove',
     GET_ALL: '/student-courses',
     GET_MY_BY_STUDENT: (id: number) => `/student-courses/me/student-curricula/${id}`,
     GET_BY_STUDENT: (id: number) => `/student-courses/student-curriculum/${id}`,
@@ -40,7 +40,7 @@ export const API_URLS = {
     CREATE: '/student-curricula',
     CREATE_BY_ME: '/student-curricula/me',
     GET_ALL: '/student-curricula',
-    GET_BY_ME: '/student-curricula/me',
+    GET_ME: '/student-curricula/me',
     GET_ONE: (id: number) => `/student-curricula/${id}`,
     GET_ONE_BY_ME: (id: number) => `/student-curricula/me/${id}`,
     UPDATE: (id: number) => `/student-curricula/${id}`,

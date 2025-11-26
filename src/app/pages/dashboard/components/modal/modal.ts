@@ -106,6 +106,8 @@ import { StudentCurriculaService } from '../../../../core/services/student-curri
  
 })
 export class Modal implements OnInit {
+  hasExistingCurricula = false;
+
   visible = false;
   private dataLoaded = false;
   private loadingInitialData = false;
@@ -147,17 +149,39 @@ export class Modal implements OnInit {
     const isLoggedIn = await this.keycloak.isLoggedIn();
     if (!isLoggedIn) {
       alert('Debes iniciar sesión para continuar.');
-      return;
-    }
-
-    await this.loadInitialData();
-
-    if (this.form.schoolId) {
-      await this.loadProgramsBySchool(this.form.schoolId);
-    }
-
-    this.visible = true;
+    return;
   }
+  
+  // 1. Buscar pensum existentes del usuario
+    const existing = await firstValueFrom(this.studentCurricula.findMe());
+
+  // 2. Si existen, activar modo selección y NO modo creación
+    if (existing && existing.length > 0) {
+    this.curricula = existing.map(c => ({
+      id: c.id,
+      version: c.curriculum?.version || `Pensum ${c.id}`
+    }));
+
+    // habilitar solo selección
+    this.form = {
+      ...this.form,
+      curriculumId: null
+    };
+
+    // mostrar modal simplificado (solo selección)
+    this.visible = true;
+    return;
+  }
+
+  // 3. Si NO existen, ejecutar flujo normal
+  await this.loadInitialData();
+  if (this.form.schoolId) {
+    await this.loadProgramsBySchool(this.form.schoolId);
+  }
+
+  this.visible = true;
+}
+
 
   async onSchoolChange(schoolId: number | null): Promise<void> {
     this.form.programId = null;

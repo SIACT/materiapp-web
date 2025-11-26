@@ -22,13 +22,13 @@ export class StudentCoursesService {
     );
   }
  
-  sync(data: {
+  approveUnApprove(data: {
     studentCurriculumId: number;
     courseInCurriculumId: number;
     approve: boolean;
   }): Observable<any> {
     return this.http.post(
-      `${this.base}${API_URLS.STUDENT_COURSES.SYNC}`,
+      `${this.base}${API_URLS.STUDENT_COURSES.APPROVE_UNAPPROVE}`,
       data
     );
   }
@@ -39,7 +39,7 @@ export class StudentCoursesService {
     );
   }
  
-  findMyByStudentCurriculumId(studentCurriculumId: number): Observable<StudentCourse[]> {
+  findMeStudentCurriculumId(studentCurriculumId: number): Observable<StudentCourse[]> {
     return this.http.get<StudentCourse[]>(
       `${this.base}${API_URLS.STUDENT_COURSES.GET_MY_BY_STUDENT(studentCurriculumId)}`
     );

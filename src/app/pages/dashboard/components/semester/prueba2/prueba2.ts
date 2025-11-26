@@ -13,7 +13,7 @@ import { Card } from "primeng/card";
   template: `
    
     <div *ngFor="let sem of semesters" class="mb-6 my-4 flex flex-col">
- 
+
       <div
         class="  flex items-center  justify-between cursor-pointer p-3 mb-2 rounded bg-primary border border-gray-300"
         (click)="toggleSemester(sem)"
@@ -105,7 +105,7 @@ export class Prueba2 implements OnInit, OnDestroy {
     this.profileSub = this.profile.state$.subscribe(profile => {
       if (!profile?.studentCurriculumId) return;
 
-      this.studentCourses.findMyByStudentCurriculumId(profile.studentCurriculumId).subscribe(res => {
+      this.studentCourses.findMeStudentCurriculumId(profile.studentCurriculumId).subscribe(res => {
         this.organizeBySemester(res);
       });
     });
@@ -148,17 +148,20 @@ export class Prueba2 implements OnInit, OnDestroy {
   }
 
   // Marca/desmarca materia como vista
-  toggleCourse(course: StudentCourse) {
-    
+  toggleCourse(course: any) {
+  const snapshot = this.profile.getSnapshot();
 
-    if (this.selectedCourses.has(course.code)) {
-      this.selectedCourses.delete(course.code);
-    } else {
-      this.selectedCourses.add(course.code);
-    }
+  const payload = {
+    studentCurriculumId: snapshot.studentCurriculumId!,
+    courseInCurriculumId: course.id,  
+    approve: !course.isApproved
+  };
 
-    // selection changed; keep state only (no debug logs in production)
-  }
+  this.studentCourses.approveUnApprove(payload).subscribe({
+    next: res => console.log(">>> RESPUESTA BACKEND", res),
+    error: err => console.error(">>> ERROR BACKEND", err)
+  });
+}
 
   // Devuelve el número de materias seleccionadas para un semestre
   getSelectedCountForSemester(semester: string) {

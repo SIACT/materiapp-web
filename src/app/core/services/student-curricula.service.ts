@@ -38,9 +38,9 @@ export class StudentCurriculaService {
     );
   }
  
-  findByMe(): Observable<StudentCurriculum[]> {
+  findMe(): Observable<StudentCurriculum[]> {
     return this.http.get<StudentCurriculum[]>(
-      `${this.base}${API_URLS.STUDENT_CURRICULA.GET_BY_ME}`
+      `${this.base}${API_URLS.STUDENT_CURRICULA.GET_ME}`
     );
   }
  

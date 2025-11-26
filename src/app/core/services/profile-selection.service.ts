@@ -44,7 +44,9 @@ export class ProfileSelectionService {
     this.stateSubject.next(this.initialState);
   }
 
-  
+  getState(): ProfileSelectionState {
+    return this.stateSubject.value;
+  }
 
 }
 

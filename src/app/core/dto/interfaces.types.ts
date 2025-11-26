@@ -1,3 +1,5 @@
+import { StudentCourse } from "./student-course.type";
+
 export interface Student {
   id: string;
   code: string;
@@ -17,12 +19,7 @@ export interface Curriculum {
   createdAt: string;
   programId: number;
 }
-
-export interface StudentCourse {
-  studentCurriculumId: number;
-  courseInCurriculumId: number;
-  createdAt: string;
-}
+ 
 
 export interface StudentCurriculum {
   id: number;
